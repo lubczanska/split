@@ -2,8 +2,10 @@ import "dotenv/config";
 import express, { Request, Response, NextFunction } from "express";
 import expensesRoutes from "./routes/expenses";
 import createHttpError, { isHttpError } from "http-errors";
+import cors from "cors";
 
 const app = express();
+app.use(cors())
 app.use(express.json());
 
 app.use("/api/expenses", expensesRoutes);

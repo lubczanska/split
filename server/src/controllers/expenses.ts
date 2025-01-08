@@ -30,12 +30,12 @@ export const getExpense: RequestHandler = async (req, res, next) => {
 };
 
 interface createExpenseBody {
-  groupId: string;
-  name: string;
-  amount: number;
-  owner: string;
-  members: Array<string>;
-  expensePerMember: Array<string>;
+  // groupId: string;
+  name?: string;
+  amount?: number;
+  // owner: string;
+  // members: Array<string>;
+  // expensePerMember: Array<string>;
   // TODO: add not required fields
 }
 
@@ -46,23 +46,22 @@ export const createExpense: RequestHandler<
   unknown
 > = async (req, res, next) => {
   const name = req.body.name;
-  const groupId = req.body.groupId;
   const amount = req.body.amount;
-  const owner = req.body.owner;
-  const members = req.body.members;
-  const expensePerMember = req.body.expensePerMember;
+  // const groupId = req.body.groupId;
+  // const owner = req.body.owner;
+  // const members = req.body.members;
+  // const expensePerMember = req.body.expensePerMember;
 
   try {
-    if (!name || !groupId || !amount || !owner || !members || !expensePerMember)
+    if (!name || !amount)
       throw createHttpError(400, "No required expense parameters");
-
     const newExpense = await ExpenseModel.create({
-      groupId: groupId,
       name: name,
       amount: amount,
-      owner: owner,
-      members: members,
-      expensePerMember: expensePerMember,
+      // groupId: groupId,
+      // owner: owner,
+      // members: members,
+      // expensePerMember: expensePerMember,
     });
     res.status(201).json(newExpense);
   } catch (error) {
@@ -75,12 +74,12 @@ interface updateExpenseParams {
 }
 
 interface updateExpenseBody {
-  groupId?: string;
+  // groupId?: string;
   name?: string;
   amount?: number;
-  owner?: string;
-  members?: Array<string>;
-  expensePerMember?: Array<string>;
+  // owner?: string;
+  // members?: Array<string>;
+  // expensePerMember?: Array<string>;
   // TODO: add not required fields
 }
 
@@ -92,15 +91,15 @@ export const updateExpense: RequestHandler<
 > = async (req, res, next) => {
   const expenseId = req.params.expenseId;
   const name = req.body.name;
-  const groupId = req.body.groupId;
+  // const groupId = req.body.groupId;
   const amount = req.body.amount;
-  const owner = req.body.owner;
-  const members = req.body.members;
-  const expensePerMember = req.body.expensePerMember;
+  // const owner = req.body.owner;
+  // const members = req.body.members;
+  // const expensePerMember = req.body.expensePerMember;
   try {
     if (!mongoose.isValidObjectId(expenseId))
       throw createHttpError(400, "invalid expense id");
-    if (!name || !groupId || !amount || !owner || !members || !expensePerMember)
+    if (!name || !amount)
       throw createHttpError(400, "No required expense parameters");
 
     const expense = await ExpenseModel.findById(expenseId).exec();
@@ -109,9 +108,9 @@ export const updateExpense: RequestHandler<
     }
     expense.name = name;
     expense.amount = amount;
-    expense.owner = owner;
-    expense.members = members;
-    expense.expensePerMember = expensePerMember;
+    // expense.owner = owner;
+    // expense.members = members;
+    // expense.expensePerMember = expensePerMember;
     const updatedExpense = await expense.save();
 
     res.status(200).json(updatedExpense);
