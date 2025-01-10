@@ -3,23 +3,31 @@ import Button from "../components/Button";
 import LogInForm from "../components/login/LogInForm";
 import SignUpForm from "../components/login/SignUpForm";
 import * as UsersApi from "../network/api";
+import { User } from "../models/user";
+import { useNavigate } from "react-router-dom";
 
-const LogIn = () => {
+interface LogInProps {
+  onLoginSuccessful: (user: User) => void;
+}
+
+const LogIn = ({ onLoginSuccessful }: LogInProps) => {
   // check if user is registered and if yes redirect to dashboard
-
+  // const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
   const [showRegister, setShowRegister] = useState(false);
   const [errorText, setErrorText] = useState<string | null>(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function loadUser() {
       try {
         setShowRegister(false);
         setErrorText(null);
+        // Redirect logged in users to dashboard
         const user = await UsersApi.getLoggedInUser();
-        //setuser but idk what it does
-        //redirect to dashboard
-        if (user) console.log(user.username)//window.location.href = "/";
-        else console.log("no user" + user);
+        if (user) {
+          navigate("/dashboard");
+        }
       } catch (error) {
         setErrorText("Oops, something went wrong!");
         console.error(error);
@@ -28,32 +36,19 @@ const LogIn = () => {
     }
     loadUser();
     setErrorText(null);
+    
+    
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  async function loadUser() {
-    try {
-      const user = await UsersApi.getLoggedInUser();
-      //setuser but idk what it does
-      //redirect to dashboard
-      if (user) console.log(user.username)//window.location.href = "/";
-      else console.log("no user logged in " + user);
-    } catch (error) {
-      setErrorText("Oops, something went wrong!");
-      console.error(error);
-      alert(error);
-    }
-  }
 
   return (
     <div>
       {errorText && <p role="alert">{errorText}</p>}
       {!showRegister && (
-        <div className="flex flex-col items-center mb-5">
+        <div className="flex flex-col items-center  justify-center mb-5">
           <LogInForm
             onLogInSuccessful={(user) => {
-              console.log(user.username + " just logged in");
-              // window.location.href = "/";
-              loadUser();
+              onLoginSuccessful(user);
             }}
           />
           <Button
@@ -64,12 +59,10 @@ const LogIn = () => {
         </div>
       )}
       {showRegister && (
-        <div className="flex flex-col items-start mb-5">
+        <div className="flex flex-col items-center justify-center  mb-5">
           <SignUpForm
             onSignUpSuccessful={(user) => {
-              //redirect to dashboard /need to finish this its a state and needs to be sent higher
-              // window.location.href = "/";
-              console.log(user.username + "signed up");
+              onLoginSuccessful(user);
             }}
           />
           <Button

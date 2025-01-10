@@ -5,47 +5,49 @@ import "./App.css";
 // import * as ExpensesApi from "./network/api";
 // import AddExpense from "./components/expense/AddEditExpense";
 // import Button from "./components/Button";
-import { BrowserRouter, Routes, Route } from "react-router";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import LogIn from "./pages/LogIn";
 import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/Dashboard";
+import NavBar from "./components/NavBar";
+import { useState } from "react";
+import { User } from "./models/user";
+import Landing from "./pages/Landing";
 
 function App() {
-  // const [expenses, setExpenses] = useState<ExpenseModel[]>([]);
-  // const [showAddExpenseDialog, setShowAddExpenseDialog] = useState(false);
-  // const [showExpenseCard, setShowExpenseCard] = useState<ExpenseModel | null>(
-  //   null
-  // );
-  // const [expensesLoading, setExpensesLoading] = useState(true);
-  // const [error, setError] = useState(false);
+  const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
 
-  // useEffect(() => {
-  //   async function loadExpenses() {
-  //     try {
-  //       setError(false);
-  //       setExpensesLoading(true);
-  //       const expenses = await ExpensesApi.fetchExpenses();
-  //       setExpenses(expenses);
-  //     } catch (error) {
-  //       setError(true);
-  //       console.error(error);
-  //       alert(error);
-  //     } finally {
-  //       setExpensesLoading(false);
-  //     }
-  //   }
-  //   loadExpenses();
-  // }, []);
-
+  const navigate = useNavigate();
 
   return (
-      <BrowserRouter>
+    <div>
+      {loggedInUser && (
+        <NavBar loggedInUser={loggedInUser} onAvatarClicked={() => {}} />
+      )}
+
+      <main className="flex min-h-screen items-center justify-center bg-gray-100">
         <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/login" element={<LogIn />} />
+          <Route path="/" element={<Landing />} />
+          <Route
+            path="/dashboard"
+            element={<Dashboard />}
+          />
+          <Route
+            path="/login"
+            element={
+              <LogIn
+                onLoginSuccessful={(user) => {
+                  console.log(user);
+                  setLoggedInUser(user);
+                  navigate("/dashboard");
+                }}
+              />
+            }
+          />
           <Route path="/*" element={<NotFound />} />
         </Routes>
-      </BrowserRouter>
+      </main>
+    </div>
   );
 }
 
