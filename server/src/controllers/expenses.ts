@@ -11,9 +11,7 @@ export const getGroupExpenses: RequestHandler = async (req, res, next) => {
   const groupId = req.params.groupId;
   try {
     const expenses = await ExpenseModel.find(
-      {
-        groupId: groupId,
-      },
+      { groupId: groupId },
       { sort: { date: -1 } }
     ).exec();
 
@@ -27,7 +25,7 @@ export const getExpense: RequestHandler = async (req, res, next) => {
   const expenseId = req.params.expenseId;
   try {
     if (!mongoose.isValidObjectId(expenseId)) {
-      throw createHttpError(400, "invalid expense id");
+      throw createHttpError(400, "Invalid expense id");
     }
     const expense = await ExpenseModel.findById(expenseId).exec();
 
@@ -118,8 +116,10 @@ export const createExpense: RequestHandler<
   const category = req.body.category;
 
   try {
-    if (!mongoose.isValidObjectId(groupId))
+    if (!mongoose.isValidObjectId(groupId)) {
       throw createHttpError(400, "Invalid group Id");
+
+    }
     if (!name || !amount || !date || !paidBy || !members || !costSplit)
       throw createHttpError(400, "No required expense parameters");
 

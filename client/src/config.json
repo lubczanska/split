@@ -1,0 +1,9 @@
+{
+  "LANDING_URL": "/",
+  "LOGIN_URL": "/login",
+  "DASHBOARD_URL": "/dashboard",
+  "VIEW_GROUP_URL": "/dashboard/viewGroup/:groupId",
+  "ADD_GROUP_URL": "/dashboard/addGroup",
+  "VIEW_EXPENSE_URL": "/dashboard/viewExpense/:expenseId",
+  "ADD_EXPENSE_URL": "/dashboard/addExpense"
+}

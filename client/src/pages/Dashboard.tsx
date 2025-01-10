@@ -1,103 +1,64 @@
 import { useEffect, useState } from "react";
-import { Expense as ExpenseModel } from "../models/expense";
-import Expense from "../components/expense/Expense";
-import * as ExpensesApi from "../network/api";
-import AddExpense from "../components/expense/AddEditExpense";
+import { Group as GroupModel } from "../models/group";
+import * as Api from "../network/api";
+import GroupCard from "../components/group/GroupCard";
 import Button from "../components/Button";
-
-
+import { Link } from "react-router-dom";
+import configData from "../config.json";
 
 const Dashboard = () => {
-  const [expenses, setExpenses] = useState<ExpenseModel[]>([]);
-  const [showAddExpenseDialog, setShowAddExpenseDialog] = useState(false);
-  const [showExpenseCard, setShowExpenseCard] = useState<ExpenseModel | null>(
-    null
-  );
-  const [expensesLoading, setExpensesLoading] = useState(true);
+  const [groups, setGroups] = useState<GroupModel[]>([]);
+  const [GroupsLoading, setGroupsLoading] = useState(true);
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    async function loadExpenses() {
+    async function loadGroups() {
       try {
         setError(false);
-        setExpensesLoading(true);
-        const expenses = await ExpensesApi.fetchExpenses();
-        setExpenses(expenses);
+        setGroupsLoading(true);
+        const Groups = await Api.fetchGroups();
+        setGroups(Groups);
       } catch (error) {
         setError(true);
         console.error(error);
         alert(error);
       } finally {
-        setExpensesLoading(false);
+        setGroupsLoading(false);
       }
     }
-    loadExpenses();
+    loadGroups();
   }, []);
 
-  const expenseGrid = (
-    <div className="flow-root">
-      <ul role="list" className="divide-y divide-gray-200 ">
-        {expenses.map((expense) => (
-          <Expense
-            expense={expense}
-            key={expense._id}
-            OnExpenseClicked={setShowExpenseCard}
-          />
-        ))}
-      </ul>
+  const GroupGrid = (
+    <div className="flow-root grid grid-cols-2 md:grid-cols-3 gap-4">
+      {groups.map((group) => (
+        <GroupCard group={group} />
+      ))}
     </div>
   );
 
   return (
     <div>
       <div className="w-full max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 ">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-col items-center justify-between mb-4">
           <h5 className="text-xl font-bold leading-none text-gray-900">
-            Your expenses
+            Your Groups
           </h5>
-
-          <Button
-            type="button"
-            label="Add expense"
-            onClick={() => setShowAddExpenseDialog(true)}
-          />
+          <Link to={configData.ADD_GROUP_URL}>
+            <Button label="New Group" />
+          </Link>
         </div>
-        {expensesLoading && <p className="text-white"> Loading...</p>}
+        {GroupsLoading && <p className="text-white"> Loading...</p>}
         {error && <p className="text-white">Something went wrong :( </p>}
-        {!expensesLoading && !error && (
+        {!GroupsLoading && !error && (
           <>
             {" "}
-            {expenses.length > 0 ? (
-              expenseGrid
+            {groups.length > 0 ? (
+              GroupGrid
             ) : (
               <p className="text-white">Looks empty in here</p>
             )}
           </>
-        )}
-        {showAddExpenseDialog && (
-          <AddExpense
-            onDismiss={() => setShowAddExpenseDialog(false)}
-            onExpenseSaved={(newExpense) => {
-              setShowAddExpenseDialog(false);
-              setExpenses([...expenses, newExpense]);
-            }}
-          />
-        )}
-        {showExpenseCard && (
-          <AddExpense
-            oldExpense={showExpenseCard}
-            onDismiss={() => setShowExpenseCard(null)}
-            onExpenseSaved={(updatedExpense) => {
-              setExpenses(
-                expenses.map((oldExpense) =>
-                  oldExpense._id === updatedExpense._id
-                    ? updatedExpense
-                    : oldExpense
-                )
-              );
-              setShowExpenseCard(null);
-            }}
-          />
         )}
       </div>
     </div>

@@ -1,6 +1,5 @@
 import { RequestHandler } from "express";
 import { assertDefined } from "../util/assertDefined";
-import { Member } from "../types/member";
 import GroupModel from "../models/group";
 import ExpenseModel from "../models/expense";
 import SettlementModel from "../models/transfer";
@@ -69,7 +68,7 @@ interface createGroupBody {
   name?: string;
   emoji?: string;
   currency?: string;
-  members?: Array<Member>;
+  members?: { name: string }[];
 }
 
 export const createGroup: RequestHandler<
@@ -96,13 +95,13 @@ export const createGroup: RequestHandler<
       if (!member.name) throw createHttpError(400, "Group members need a name");
       balance.set(member.name, 0);
     });
-
+    console.log(balance);
     const newGroup = await GroupModel.create({
       name: name,
       emoji: emoji,
       currency: currency,
       members: members,
-      membersBalance: balance,
+      memberBalance: balance,
       owner: userId,
       isPublic: false,
     });

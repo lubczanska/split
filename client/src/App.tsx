@@ -6,13 +6,16 @@ import "./App.css";
 // import AddExpense from "./components/expense/AddEditExpense";
 // import Button from "./components/Button";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import LogIn from "./pages/LogIn";
+import LogIn from "./components/login/LogIn";
 import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/Dashboard";
 import NavBar from "./components/NavBar";
 import { useState } from "react";
 import { User } from "./models/user";
 import Landing from "./pages/Landing";
+import AddGroup from "./components/group/AddGroup";
+import configData from "./config.json";
+import Group from "./components/group/Group";
 
 function App() {
   const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
@@ -27,11 +30,10 @@ function App() {
 
       <main className="flex min-h-screen items-center justify-center bg-gray-100">
         <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route
-            path="/dashboard"
-            element={<Dashboard />}
-          />
+          <Route path={configData.LANDING_URL} element={<Landing />} />
+          <Route path={configData.DASHBOARD_URL} element={<Dashboard />} />
+          <Route path={configData.ADD_GROUP_URL} element={<AddGroup />} />
+          <Route path={configData.VIEW_GROUP_URL} element={<Group />} />
           <Route
             path="/login"
             element={

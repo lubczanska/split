@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import Button from "../components/Button";
+import configData from "../config.json";
 
 const Landing = () => {
   return (
@@ -7,7 +8,7 @@ const Landing = () => {
       <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl ">
         Welcome to SPLIT
       </h1>
-      <Link to="/login">
+      <Link to={configData.LOGIN_URL}>
         <Button label="Log In or Register" />
       </Link>
       <div>

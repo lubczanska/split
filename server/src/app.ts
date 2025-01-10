@@ -2,6 +2,7 @@ import "dotenv/config";
 import express, { Request, Response, NextFunction } from "express";
 import expensesRoutes from "./routes/expenses";
 import userRoutes from "./routes/users";
+import groupRoutes from "./routes/groups";
 import createHttpError, { isHttpError } from "http-errors";
 import cors from "cors";
 import session from "express-session";
@@ -28,8 +29,7 @@ app.use(
 app.use(cors({ credentials: true, origin: true }));
 
 app.use("/api/users", userRoutes);
-app.use("/api/groups", userRoutes);//user
-app.use("/api/transfers", userRoutes);//user
+app.use("/api/groups", groupRoutes);
 app.use("/api/expenses", expensesRoutes);
 
 app.use((req, res, next) => {

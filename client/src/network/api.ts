@@ -1,11 +1,9 @@
 import { Expense } from "../models/expense";
 import { User } from "../models/user";
+import { Group } from "../models/group";
 
 async function fetchData(input: RequestInfo, init?: RequestInit) {
   const response = await fetch(input, init);
-  console.log(input);
-  console.log(init);
-  console.log(response);
   if (response.ok) {
     return response;
   } else {
@@ -67,29 +65,132 @@ export async function logOut() {
     credentials: "include",
   });
 }
-// Expenses Api
-export async function fetchExpenses(): Promise<Expense[]> {
-  const response = await fetchData("http://localhost:5000/api/expenses", {
+// Groups Api
+export async function fetchGroups(): Promise<Group[]> {
+  const response = await fetchData("http://localhost:5000/api/groups", {
     method: "GET",
     credentials: "include",
   });
   return response.json();
 }
 
-export interface ExpenseInput {
+export interface GroupInput {
   name: string;
-  amount: number;
+  emoji: string;
+  currency: string;
+  members: {name: string}[];
 }
 
-export async function createExpense(expense: ExpenseInput): Promise<Expense> {
-  const response = await fetchData("http://localhost:5000/api/expenses", {
+export async function createGroup(group: GroupInput): Promise<Group> {
+  const response = await fetchData("http://localhost:5000/api/groups", {
     method: "POST",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(expense),
+    body: JSON.stringify(group),
   });
+  return response.json();
+}
+
+export async function updateGroup(
+  groupId: string,
+  group: GroupInput
+): Promise<Group> {
+  const response = await fetchData(
+    "http://localhost:5000/api/groups/" + groupId,
+    {
+      method: "PATCH",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(group),
+    }
+  );
+  return response.json();
+}
+
+export async function deleteGroup(groupId: string) {
+  await fetchData("http://localhost:5000/api/groups/" + groupId, {
+    method: "DELETE",
+    credentials: "include",
+  });
+}
+
+// Expenses Api
+export async function fetchGroupExpenses(groupId: string): Promise<Expense[]> {
+  const response = await fetchData(
+    "http://localhost:5000/api/expenses/view/" + groupId,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+  return response.json();
+}
+
+export interface ExpenseInput {
+  name: string;
+  amount: number;
+  date: string;
+  category: string;
+  paidBy: string;
+  members: string[];
+  costSplit: Map<string, number>;
+}
+
+export async function createExpense(
+  groupId: string,
+  expense: ExpenseInput
+): Promise<Expense> {
+  const response = await fetchData(
+    "http://localhost:5000/api/expenses/" + groupId + "/addExpense",
+    {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(expense),
+    }
+  );
+  return response.json();
+}
+
+export interface TransferInput {
+  from: string;
+  to: string;
+  date: string;
+  amount: string;
+}
+
+export async function createTransfer(
+  groupId: string,
+  transfer: TransferInput
+): Promise<Expense> {
+  const split = new Map();
+  split.set(transfer.to, transfer.amount);
+  const expense = {
+    name: "Transfer",
+    amount: transfer.amount,
+    date: transfer.date,
+    category: "Transfer",
+    paidBy: transfer.from,
+    members: [transfer.to],
+    costSplit: split,
+  };
+  const response = await fetchData(
+    "http://localhost:5000/api/expenses/" + groupId + "/addExpense",
+    {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(expense),
+    }
+  );
   return response.json();
 }
 

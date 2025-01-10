@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import Button from "../components/Button";
-import LogInForm from "../components/login/LogInForm";
-import SignUpForm from "../components/login/SignUpForm";
-import * as UsersApi from "../network/api";
-import { User } from "../models/user";
+import Button from "../Button";
+import LogInForm from "./LogInForm";
+import SignUpForm from "./SignUpForm";
+import * as Api from "../../network/api";
+import { User } from "../../models/user";
 import { useNavigate } from "react-router-dom";
 
 interface LogInProps {
@@ -24,7 +24,7 @@ const LogIn = ({ onLoginSuccessful }: LogInProps) => {
         setShowRegister(false);
         setErrorText(null);
         // Redirect logged in users to dashboard
-        const user = await UsersApi.getLoggedInUser();
+        const user = await Api.getLoggedInUser();
         if (user) {
           navigate("/dashboard");
         }
