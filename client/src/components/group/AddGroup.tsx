@@ -3,17 +3,19 @@ import { createGroup, GroupInput } from "../../network/api";
 import SelectField from "../form/SelectField";
 import TextInputField from "../form/TextInputField";
 import Button from "../Button";
-import { useNavigate } from "react-router";
-import configData from "../../config.json"
+import { useLocation, useNavigate } from "react-router";
+import configData from "../../config.json";
 
 const AddGroup = () => {
-    const navigate=useNavigate();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const {
     register,
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<GroupInput>({ defaultValues: { members: [{name: ""}] } });
+  } = useForm<GroupInput>({ defaultValues: { members: [{ name: "" }] } });
 
   const { fields, append, remove } = useFieldArray({
     name: "members",
@@ -21,8 +23,9 @@ const AddGroup = () => {
   });
 
   const onSubmit = async (group: GroupInput) => {
+    group.members.unshift({name: location.state.user.username})
     const createResponse = await createGroup(group);
-    navigate(configData.VIEW_GROUP_URL+createResponse._id)
+    navigate(configData.VIEW_GROUP_URL + createResponse._id);
   };
 
   return (
@@ -42,8 +45,8 @@ const AddGroup = () => {
         <SelectField
           name="emoji"
           label="emoji"
-          selected={{ value: "🙂", label: "🙂" }}
           options={[
+            { value: "🙂", label: "🙂" },
             { value: "💵", label: "💵" },
             { value: "💩", label: "💩" },
             { value: "💀", label: "💀" },
@@ -55,8 +58,8 @@ const AddGroup = () => {
         <SelectField
           name="currency"
           label="currency"
-          selected={{ value: "PLN", label: "Polish Zloty" }}
           options={[
+            { value: "PLN", label: "Polish Zloty" },
             { value: "EUR", label: "Euro" },
             { value: "USD", label: "US Dollar" },
             { value: "GBP", label: "British Pound" },
@@ -70,6 +73,21 @@ const AddGroup = () => {
           Members
         </label>
         <div className="border border-black empty:border-0 rounded-lg bg-white">
+          <div className=" border-b border-black last:border-0">
+            <section
+              className={
+                "section flex gap-3 text-black text-sm  block w-full p-2.5 d"
+              }
+            >
+              <input
+                placeholder="name"
+                disabled
+                readOnly
+                value={location.state.user.username}
+                className={"focus:ring-green-500 focus:border-green-500"}
+              />
+            </section>
+          </div>
           {fields.map((field, index) => {
             return (
               <div

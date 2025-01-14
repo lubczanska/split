@@ -10,30 +10,49 @@ import LogIn from "./components/login/LogIn";
 import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/Dashboard";
 import NavBar from "./components/NavBar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { User } from "./models/user";
 import Landing from "./pages/Landing";
 import AddGroup from "./components/group/AddGroup";
 import configData from "./config.json";
 import Group from "./components/group/Group";
+import AddExpense from "./components/expense/AddEditExpense";
+import * as Api from "./network/api"
 
 function App() {
   const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    async function getUser() {
+      try {
+        const user = await Api.getLoggedInUser();
+        if (user) {
+          setLoggedInUser(user)
+        }
+      } catch (error) {
+        console.error(error);
+        alert(error);
+      }
+    }
+    getUser();
+  }, []);
+
+
   return (
     <div>
       {loggedInUser && (
-        <NavBar loggedInUser={loggedInUser} onAvatarClicked={() => {}} />
+        <NavBar loggedInUser={loggedInUser} onAvatarClicked={() => navigate(configData.DASHBOARD_URL)} />
       )}
 
-      <main className="flex min-h-screen items-center justify-center bg-gray-100">
+      <main className="flex min-h-screen items-start justify-center bg-gray-100 py-10">
         <Routes>
           <Route path={configData.LANDING_URL} element={<Landing />} />
           <Route path={configData.DASHBOARD_URL} element={<Dashboard />} />
           <Route path={configData.ADD_GROUP_URL} element={<AddGroup />} />
           <Route path={configData.VIEW_GROUP_URL} element={<Group />} />
+          <Route path={configData.ADD_EXPENSE_URL} element={<AddExpense/>} />
           <Route
             path="/login"
             element={

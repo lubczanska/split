@@ -3,8 +3,8 @@ export interface Group {
     name: string;
     emoji: string;
     currency: string;
-    members: string[];
-    memberBalance: Map<string, number>;
+    members: {name: string}[];
+    memberBalance: Record<string, number>;
     owner: string;
     isPublic: boolean;
   }

@@ -10,11 +10,9 @@ view Group Transfers and Expenses
 export const getGroupExpenses: RequestHandler = async (req, res, next) => {
   const groupId = req.params.groupId;
   try {
-    const expenses = await ExpenseModel.find(
-      { groupId: groupId },
-      { sort: { date: -1 } }
-    ).exec();
-
+    const expenses = await ExpenseModel.find({ groupId: groupId })
+      .sort({ date: -1 })
+      .exec();
     res.status(200).json(expenses);
   } catch (error) {
     next(error);
@@ -47,7 +45,7 @@ interface createExpenseBody {
   date?: string;
   category?: string;
   paidBy?: string;
-  members: Array<string>;
+  members: string[];
   costSplit: Map<string, number>;
 }
 
@@ -55,23 +53,29 @@ const updateBalances = async (
   groupId: string,
   paidBy: string,
   amount: number,
-  members: Array<string>,
+  members: string[],
   split: Map<string, number>
 ) => {
   const group = await GroupModel.findById(groupId).exec();
   if (!group) throw createHttpError(404, "No group");
 
-  group.memberBalance.set(
-    paidBy,
-    Number(group.memberBalance.get(paidBy)) + amount
-  );
   members.forEach((member) => {
     group.memberBalance.set(
       member,
-      Number(group.memberBalance.get(member)) - Number(split.get(member))
+      Math.round(
+        (Number(group.memberBalance.get(member)) -
+          Number(split.get(member)) +
+          Number.EPSILON) *
+          100
+      ) / 100
     );
   });
-
+  group.memberBalance.set(
+    paidBy,
+    Math.round(
+      (Number(group.memberBalance.get(paidBy)) + amount + Number.EPSILON) * 100
+    ) / 100
+  );
   group.save();
 };
 
@@ -85,16 +89,16 @@ const clearBalances = async (
   const group = await GroupModel.findById(groupId).exec();
   if (!group) throw createHttpError(404, "No group");
 
-  group.memberBalance.set(
-    paidBy,
-    Number(group.memberBalance.get(paidBy)) - amount
-  );
   members.forEach((member) => {
     group.memberBalance.set(
       member,
       Number(group.memberBalance.get(member)) + Number(split.get(member))
     );
   });
+  group.memberBalance.set(
+    paidBy,
+    Number(group.memberBalance.get(paidBy)) - amount
+  );
 
   group.save();
 };
@@ -118,12 +122,13 @@ export const createExpense: RequestHandler<
   try {
     if (!mongoose.isValidObjectId(groupId)) {
       throw createHttpError(400, "Invalid group Id");
-
     }
     if (!name || !amount || !date || !paidBy || !members || !costSplit)
       throw createHttpError(400, "No required expense parameters");
 
-    await updateBalances(groupId, paidBy, amount, members, costSplit);
+    const split = new Map(Object.entries(costSplit));
+    // TODO: fix equal splits
+    await updateBalances(groupId, paidBy, amount, members, split);
 
     const newExpense = await ExpenseModel.create({
       name: name,
@@ -179,7 +184,7 @@ export const updateExpense: RequestHandler<
 
     const expense = await ExpenseModel.findById(expenseId).exec();
     if (!expense) {
-      throw createHttpError(404, "exoense not found");
+      throw createHttpError(404, "expense not found");
     }
 
     const groupId = expense.groupId.toString();

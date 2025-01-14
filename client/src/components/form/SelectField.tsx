@@ -3,7 +3,7 @@ import { FieldError, RegisterOptions, UseFormRegister } from "react-hook-form";
 interface SelectFieldProps {
   name: string;
   label: string;
-  selected: { value: string; label: string };
+  // selected: { value: string; label: string };
   options: { value: string; label: string }[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   register: UseFormRegister<any>;
@@ -16,7 +16,6 @@ interface SelectFieldProps {
 const SelectField = ({
   name,
   label,
-  selected,
   options,
   register,
   registerOptions,
@@ -35,12 +34,15 @@ const SelectField = ({
         {...register(name, registerOptions)}
       >
         aria-invalid={error ? "true" : "false"}
-        <option selected value={selected.value}>
-          {" "}
-          {selected.label}{" "}
+        {options.map((option, index) => (
+          index ? 
+          <option  key={option.value} value={option.value}>
+            {option.label}
+          </option>
+          :
+          <option  key={option.value} selected={true} value={option.value}>
+          {option.label}
         </option>
-        {options.map((option) => (
-          <option value={option.value}>{option.label}</option>
         ))}
       </select>
       {error && (

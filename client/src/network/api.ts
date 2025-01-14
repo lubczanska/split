@@ -66,6 +66,13 @@ export async function logOut() {
   });
 }
 // Groups Api
+export async function fetchGroup(groupId : string) : Promise<Group> {
+  const response = await fetchData("http://localhost:5000/api/groups/" + groupId, {
+    method: "GET",
+    credentials: "include",
+  });
+  return response.json();
+}
 export async function fetchGroups(): Promise<Group[]> {
   const response = await fetchData("http://localhost:5000/api/groups", {
     method: "GET",
@@ -82,6 +89,7 @@ export interface GroupInput {
 }
 
 export async function createGroup(group: GroupInput): Promise<Group> {
+  
   const response = await fetchData("http://localhost:5000/api/groups", {
     method: "POST",
     credentials: "include",
@@ -118,6 +126,17 @@ export async function deleteGroup(groupId: string) {
   });
 }
 
+export async function fetchGroupSettlement(groupId: string): Promise<[string,string,number][]> {
+  const response = await fetchData(
+    "http://localhost:5000/api/groups/balance/" + groupId,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+  return response.json();
+}
+
 // Expenses Api
 export async function fetchGroupExpenses(groupId: string): Promise<Expense[]> {
   const response = await fetchData(
@@ -137,7 +156,7 @@ export interface ExpenseInput {
   category: string;
   paidBy: string;
   members: string[];
-  costSplit: Map<string, number>;
+  costSplit: Record<string, number>;
 }
 
 export async function createExpense(

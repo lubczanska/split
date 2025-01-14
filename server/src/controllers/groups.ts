@@ -5,7 +5,28 @@ import ExpenseModel from "../models/expense";
 import SettlementModel from "../models/transfer";
 import mongoose from "mongoose";
 import createHttpError from "http-errors";
+import simplifyTransactions from "../util/balance";
 
+export const getBalance: RequestHandler = async (req, res, next) => {
+  const groupId = req.params.groupId;
+
+  try {
+    if (!mongoose.isValidObjectId(groupId)) {
+      throw createHttpError(400, "invalid expense id");
+    }
+
+    const group = await GroupModel.findById(groupId).exec();
+
+    if (!group) {
+      throw createHttpError(404, "Group not found");
+    }
+    const transfers = simplifyTransactions(group.memberBalance);
+    console.log(transfers)
+    res.status(200).json(transfers);
+  } catch (error) {
+    next(error);
+  }
+};
 /*
 Get all groups logged in user is a member of
 Accepts: user ID
@@ -96,6 +117,7 @@ export const createGroup: RequestHandler<
       balance.set(member.name, 0);
     });
     console.log(balance);
+
     const newGroup = await GroupModel.create({
       name: name,
       emoji: emoji,
