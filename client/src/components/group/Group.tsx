@@ -70,13 +70,13 @@ const Dashboard = () => {
   }
 
   async function settle() {
-    console.log("settling debts...");
     if (group) {
       const res = await Api.fetchGroupSettlement(group._id);
       setSettlements(res);
-      console.log(res);
     }
   }
+
+
 
   const expenseGrid = (
     <div className="flow-root">
@@ -137,6 +137,9 @@ const Dashboard = () => {
           </h5>
           <Link to={configData.ADD_EXPENSE_URL + group?._id}>
             <Button type="button" label="Add expense" />
+          </Link>
+          <Link to={configData.ADD_TRANSFER_URL + group?._id}>
+            <Button type="button" label="Add transfer" />
           </Link>
         </div>
         {expensesLoading && <p className="text-white"> Loading...</p>}

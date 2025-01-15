@@ -131,6 +131,7 @@ const AddExpense = () => {
           options={groupMembers.map((m) => {
             return { value: m, label: m };
           })}
+          defaultVal={groupMembers[0]}
           register={register}
           registerOptions={{ required: "Required" }}
           error={errors.paidBy}

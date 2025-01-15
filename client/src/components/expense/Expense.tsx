@@ -13,11 +13,26 @@ const Expense = ({
   OnExpenseClicked,
   OnDeleteClicked,
 }: ExpenseProps) => {
+  function categoryEmoji(category: string) {
+    const emojis: Record<string, string> = {
+      Others: "💵",
+      Transfer: "💸",
+      Transport: "🚗",
+      Food: "🍕",
+      Shoppng: "🛍️",
+      Entertainment: "🛍️",
+      Home: "🛍️",
+      Accomodation: "🛏️",
+    };
+    return emojis[category];
+  }
+
   return (
     <li className="py-3 sm:py-4 ">
       <div className="flex items-center gap-4">
+        <p className="text-2xl ">{categoryEmoji(expense.category)}</p>
         <div
-          className="flex-1 min-w-0 ms-4"
+          className="flex flex-col flex-1 min-w-0 ms-4 items-start"
           onClick={() => OnExpenseClicked(expense)}
         >
           <p className="text-sm font-medium text-gray-900 truncate ">

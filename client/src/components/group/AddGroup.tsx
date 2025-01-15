@@ -23,7 +23,7 @@ const AddGroup = () => {
   });
 
   const onSubmit = async (group: GroupInput) => {
-    group.members.unshift({name: location.state.user.username})
+    group.members.unshift({ name: location.state.user.username });
     const createResponse = await createGroup(group);
     navigate(configData.VIEW_GROUP_URL + createResponse._id);
   };
@@ -51,6 +51,7 @@ const AddGroup = () => {
             { value: "💩", label: "💩" },
             { value: "💀", label: "💀" },
           ]}
+          defaultVal="🙂"
           register={register}
           registerOptions={{ required: "Required" }}
           error={errors.emoji}
@@ -65,6 +66,7 @@ const AddGroup = () => {
             { value: "GBP", label: "British Pound" },
             { value: "CZK", label: "Czech Koruna" },
           ]}
+          defaultVal="PLN"
           register={register}
           registerOptions={{ required: "Required" }}
           error={errors.currency}

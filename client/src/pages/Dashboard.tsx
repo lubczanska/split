@@ -50,9 +50,8 @@ const Dashboard = () => {
   );
 
   return (
-    <div>
-      <div className="w-full max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 ">
-        <div className="flex items-center justify-between mb-4">
+      <div className="w-8/12 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 ">
+        <div className="flex items-center gap-8 justify-between mb-4">
           <h5 className="text-xl font-bold leading-none text-gray-900">
             Your Groups
           </h5>
@@ -71,7 +70,6 @@ const Dashboard = () => {
           </>
         )}
       </div>
-    </div>
   );
 };
 

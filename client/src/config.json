@@ -5,5 +5,6 @@
   "VIEW_GROUP_URL": "/dashboard/:groupId",
   "ADD_GROUP_URL": "/dashboard/addGroup",
   "VIEW_EXPENSE_URL": "/dashboard/viewExpense/:expenseId",
-  "ADD_EXPENSE_URL": "/dashboard/addExpense/:groupId"
+  "ADD_EXPENSE_URL": "/dashboard/addExpense/:groupId",
+  "ADD_TRANSFER_URL": "/dashboard/addTransfer/:groupId"
 }
