@@ -8,7 +8,6 @@ interface NavBarProps {
 }
 
 const NavBar = ({ loggedInUser, onAvatarClicked }: NavBarProps) => {
-
   async function onLogOut() {
     try {
       await UsersApi.logOut();
@@ -19,22 +18,22 @@ const NavBar = ({ loggedInUser, onAvatarClicked }: NavBarProps) => {
   }
 
   return (
-    <nav className="border-gray-200 bg-gray-50 ">
-      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-        <a href="#" className="flex items-center space-x-3 rtl:space-x-reverse">
+    <header className="sticky top-0 z-999 flex w-full bg-white">
+      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4 w-screen">
+        <a href="#" className="flex items-center space-x-3 gap-2">
           <img
             onClick={onAvatarClicked}
             src="https://www.svgrepo.com/show/344750/emoji-smile-upside-down.svg"
             className="h-8"
             alt="Flowbite Logo"
           />
-          <span className="self-center text-2xl font-semibold whitespace-nowrap">
-            Hello {loggedInUser ? loggedInUser.username : "?"}
+          <span className="self-center text-xl font-semibold whitespace-nowrap">
+            @{loggedInUser ? loggedInUser.username : ""}
           </span>
         </a>
         <Button label="Log Out" onClick={onLogOut} />
       </div>
-    </nav>
+    </header>
   );
 };
 

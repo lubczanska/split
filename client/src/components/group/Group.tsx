@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Expense as ExpenseModel } from "../../models/expense";
 import { Group as GroupModel } from "../../models/group";
+import { User as UserModel } from "../../models/user";
 import Expense from "../expense/Expense";
 import * as Api from "../../network/api";
 import { Link, useNavigate, useParams } from "react-router";
@@ -8,8 +9,9 @@ import Button from "../Button";
 import configData from "../../config.json";
 import Balance from "./Balance";
 
-const Dashboard = () => {
+const Group = () => {
   const params = useParams();
+  const [loggedInUser, setLoggedInUser] = useState<UserModel | null>(null);
   const [group, setGroup] = useState<GroupModel | null>(null);
   const [expenses, setExpenses] = useState<ExpenseModel[]>([]);
   const [expensesLoading, setExpensesLoading] = useState(true);
@@ -31,6 +33,10 @@ const Dashboard = () => {
           setExpenses(expenses);
           const group = await Api.fetchGroup(groupId);
           setGroup(group);
+          const user = await Api.getLoggedInUser();
+          if (user) {
+            setLoggedInUser(user);
+          }
         } else {
           navigate(configData.DASHBOARD_URL);
         }
@@ -76,8 +82,6 @@ const Dashboard = () => {
     }
   }
 
-
-
   const expenseGrid = (
     <div className="flow-root">
       <ul role="list" className="divide-y divide-gray-200 ">
@@ -111,9 +115,9 @@ const Dashboard = () => {
   );
   return (
     <div>
-      <div className="w-full max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 ">
+      <div className="p-4 bg-white border border-black rounded-lg sm:p-8 ">
         <div className="flex justify-between gap-5 mb-4">
-          <div className="flex gap-5">
+          <div className="flex gap-5 py-4">
             <h2 className="text-xl font-bold leading-none text-gray-900">
               {group?.emoji}
             </h2>
@@ -128,44 +132,83 @@ const Dashboard = () => {
             }}
             className="justify-self-end text-base font-semibold text-red-500 hover:text-white "
           >
-            DELETE
+            DELETE GROUP
           </button>
+          <Link to={configData.EDIT_GROUP_URL + group?._id}>
+          <button
+          
+            className="justify-self-end text-base font-semibold  hover:text-white "
+          >
+            EDIT GROUP
+          </button></Link>
         </div>
-        <div className="flex items-center justify-between gap-4 mb-4">
-          <h5 className="text-lg font-bold leading-none text-gray-900">
-            Your expenses
-          </h5>
-          <Link to={configData.ADD_EXPENSE_URL + group?._id}>
-            <Button type="button" label="Add expense" />
-          </Link>
-          <Link to={configData.ADD_TRANSFER_URL + group?._id}>
-            <Button type="button" label="Add transfer" />
-          </Link>
-        </div>
-        {expensesLoading && <p className="text-white"> Loading...</p>}
-        {error && <p className="text-white">Something went wrong :( </p>}
-        {!expensesLoading && !error && (
-          <>
-            {" "}
-            {expenses.length > 0 ? (
-              expenseGrid
-            ) : (
-              <p className="text-white">Looks empty in here</p>
+        <div className="flex justify-around">
+          <div className="flex flex-col items-center justify-start gap-4 mb-4 border border-black rounded-xl p-6 w-1/2">
+            <div className="flex items-center justify-between gap-4">
+              <h5 className="text-lg font-bold leading-none text-gray-900">
+                Your expenses
+              </h5>
+              <Link to={configData.ADD_EXPENSE_URL + group?._id}>
+                <Button type="button" label="Add expense" />
+              </Link>
+              <Link to={configData.ADD_TRANSFER_URL + group?._id}>
+                <Button type="button" label="Add transfer" />
+              </Link>
+            </div>
+            {expensesLoading && <p className="text-white"> Loading...</p>}
+            {error && <p className="text-white">Something went wrong :( </p>}
+            {!expensesLoading && !error && (
+              <>
+                {" "}
+                {expenses.length > 0 ? (
+                  expenseGrid
+                ) : (
+                  <p className="text-white">Looks empty in here</p>
+                )}
+              </>
             )}
-          </>
-        )}
-        <h6 className="text-lg font-bold leading-none text-gray-900 py-6">
-          Balances
-        </h6>
-        {balances}
-        <Button label="get Settlements" onClick={settle} />
-        {settlements &&
-          settlements.map(([from, to, amt]) => (
-            <p>{`${from} -> ${to} : ${amt}`} </p>
-          ))}
+          </div>
+          <div className="border border-black rounded-xl p-6 w-1/3">
+            {settlements ? (
+              <div>
+                {" "}
+                <h6 className="text-lg font-bold leading-none text-gray-900 py-6">
+                  Suggested Reimbursements
+                </h6>
+                <div className={"mb-4 bg-yellow-300 rounded-full"}>
+                  <p>You are owed</p>
+                  <p className="font-semibold">
+                    {loggedInUser &&
+                      group?.memberBalance[loggedInUser.username]}{" "}
+                    {group?.currency}
+                  </p>
+                </div>
+                {settlements.map(([from, to, amt]) => (
+                  <div className="flex gap-2 py-1">
+                    <p className="font-semibold">{from}</p>
+                    <p>owes</p>
+                    <p className="font-semibold">{to} </p>
+                    <p className="">
+                      {amt} {group?.currency}{" "}
+                    </p>
+                  </div>
+                ))}
+                <Button label="Balances" onClick={() => setSettlements(null)} />
+              </div>
+            ) : (
+              <div>
+                <h6 className="text-lg font-bold leading-none text-gray-900 py-6">
+                  Balances
+                </h6>
+                {balances}
+                <Button label="get Settlements" onClick={settle} />
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
-export default Dashboard;
+export default Group;

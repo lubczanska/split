@@ -2,6 +2,8 @@ import { RequestHandler } from "express";
 import UserModel from "../models/user";
 import createHttpError from "http-errors";
 import { compare, hash } from "bcryptjs";
+import { assertDefined } from "../util/assertDefined";
+import GroupModel from "../models/group";
 
 export const getAuthenticatedUser: RequestHandler = async (req, res, next) => {
   try {
@@ -9,6 +11,29 @@ export const getAuthenticatedUser: RequestHandler = async (req, res, next) => {
       .select("+email")
       .exec();
     res.status(201).json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getUserOwed: RequestHandler = async (req, res, next) => {
+  const userId = req.session.userId;
+  try {
+    assertDefined(userId);
+    const user = await UserModel.findById(req.session.userId).exec();
+    if (!user) throw createHttpError(400, "No user");
+    // change to member not owner later
+    let owed = 0;
+    const balances = await GroupModel.find(
+      { owner: userId },
+      { memberBalance: true }
+    ).exec();
+    balances.forEach((bal) => {
+      const userBal = bal.memberBalance.get(user.username);
+      if (userBal) owed += userBal
+    });
+
+    res.status(200).json(owed);
   } catch (error) {
     next(error);
   }

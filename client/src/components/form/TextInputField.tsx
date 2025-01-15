@@ -20,8 +20,8 @@ const TextInputField = ({
   ...props
 }: TextInputFieldProps) => {
   return (
-    <div>
-      <label className="block mb-2 text-sm font-medium text-gray-900">
+    <div className="py-2">
+      <label className="block mb-2 text-sm font-medium ">
         {label}
       </label>
       <input

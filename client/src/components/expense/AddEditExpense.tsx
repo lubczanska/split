@@ -15,6 +15,7 @@ const AddExpense = () => {
   const [groupMembers, setGroupMembers] = useState<string[]>([]);
   const [participants, setParticipants] = useState<boolean[]>([]);
   const [equal, setEqual] = useState(true);
+  const [errorText, setErrorText] = useState<string | null>(null);
 
   useEffect(() => {
     async function getGroup() {
@@ -67,29 +68,30 @@ const AddExpense = () => {
         .map((key) => [key[0], Number(key[1])]);
 
       const total = split.reduce((acc, curr) => acc + Number(curr[1]), 0);
-      if (!equal && total != input.amount) {
-        alert("invalid split");
-      } else {
-        input.costSplit = Object.fromEntries(split);
-        console.log(input);
-        if (group) {
-          await Api.createExpense(group._id, input);
-          navigate(configData.VIEW_GROUP_URL + group._id);
-        }
+      if (!equal && total != input.amount)
+        throw Error("Split has to sum up to amount");
+
+      input.costSplit = Object.fromEntries(split);
+      console.log(input);
+      if (group) {
+        await Api.createExpense(group._id, input);
+        navigate(configData.VIEW_GROUP_URL + group._id);
       }
     } catch (error) {
-      console.error(error);
-      alert(error);
+      if (error instanceof Error) setErrorText(error.message);
+      else alert(error);
     }
   }
 
   return (
     <div>
+      <p className="text-red-700 text-semibold">{errorText}</p>
       <form
-        className="max-w-sm mx-auto"
+        className="max-w-sm mx-auto border border-black rounded-xl p-8"
         id="addExpenseForm"
         onSubmit={handleSubmit(onSubmit)}
       >
+        <h5 className="text-2xl font-bold pb-6">Add Expense</h5>
         <TextInputField
           name="name"
           label="Name"
@@ -97,6 +99,7 @@ const AddExpense = () => {
           registerOptions={{ required: "Required" }}
           error={errors.name}
         />
+        <div className="flex gap-4">
         <TextInputField
           name="amount"
           label="Amount"
@@ -106,6 +109,9 @@ const AddExpense = () => {
             pattern: {
               value: /^\d+(?:\.\d{1,2})?$/gm,
               message: "Impossible amount of money",
+            },
+            validate: {
+              positive: (v) => Number(v) >= 0,
             },
             onChange: () => {
               if (equal) splitEqually();
@@ -124,6 +130,7 @@ const AddExpense = () => {
           registerOptions={{ required: "Required" }}
           error={errors.date}
         />
+        </div>
         <SelectField
           name="paidBy"
           label="Paid by"
@@ -201,7 +208,7 @@ const AddExpense = () => {
         <button
           type="submit"
           form="addExpenseForm"
-          className="text-black bg-green-300 border border-black hover:bg-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 "
+          className="text-black bg-green-300 border border-black hover:bg-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-full text-sm px-5  w-full py-2.5 text-center me-2 mb-2 "
           disabled={isSubmitting}
         >
           Submit

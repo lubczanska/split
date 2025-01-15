@@ -20,6 +20,7 @@ const AddEditTransfer = () => {
   const params = useParams();
   const [group, setGroup] = useState<GroupModel | null>(null);
   const [groupMembers, setGroupMembers] = useState<string[]>([]);
+  const [errorText, setErrorText] = useState<string | null>(null);
 
   useEffect(() => {
     async function getGroup() {
@@ -45,10 +46,9 @@ const AddEditTransfer = () => {
 
   async function onSubmit(input: TransferInput) {
     try {
-      if (input.from === input.to) {
-        alert("cannot transfer to yourself");
-        return;
-      }
+      if (input.from === input.to)
+        throw Error("You cannot transfer to yourself");
+
       input.amount = Number(input.amount);
       const newInput: ExpenseInput = {
         name: "transfer",
@@ -64,17 +64,19 @@ const AddEditTransfer = () => {
         navigate(configData.VIEW_GROUP_URL + group._id);
       }
     } catch (error) {
-      console.error(error);
-      alert(error);
+      if (error instanceof Error) setErrorText(error.message);
+      else alert(error);
     }
   }
   return (
     <div>
+      <p className="text-red-700 text-semibold">{errorText}</p>
       <form
-        className="max-w-sm mx-auto"
+        className="max-w-sm mx-auto border border-black rounded-xl p-8"
         id="addTransferForm"
         onSubmit={handleSubmit(onSubmit)}
       >
+        <h5 className="text-2xl font-bold pb-6">Add Transfer</h5>
         <SelectField
           name="from"
           label="From"
@@ -125,7 +127,7 @@ const AddEditTransfer = () => {
         <button
           type="submit"
           form="addTransferForm"
-          className="text-black bg-green-300 border border-black hover:bg-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 "
+          className="text-black bg-green-300 border border-black hover:bg-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 my-2 w-full "
           disabled={isSubmitting}
         >
           Submit

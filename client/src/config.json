@@ -4,6 +4,8 @@
   "DASHBOARD_URL": "/dashboard",
   "VIEW_GROUP_URL": "/dashboard/:groupId",
   "ADD_GROUP_URL": "/dashboard/addGroup",
+  "EDIT_GROUP_URL": "/dashboard/editGroup/:groupId",
+  "EDIT_GROUP_URL_LINK": "/dashboard/editGroup/",
   "VIEW_EXPENSE_URL": "/dashboard/viewExpense/:expenseId",
   "ADD_EXPENSE_URL": "/dashboard/addExpense/:groupId",
   "ADD_TRANSFER_URL": "/dashboard/addTransfer/:groupId"

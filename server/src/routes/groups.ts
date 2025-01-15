@@ -2,7 +2,7 @@ import express from "express";
 import * as GroupsController from "../controllers/groups";
 
 const router = express.Router();
-router.get("/balance/:groupId", GroupsController.getBalance)
+router.get("/balance/:groupId", GroupsController.getSettlements)
 router.get("/", GroupsController.getUserGroups);
 router.get("/:groupId", GroupsController.getGroup);
 router.post("/", GroupsController.createGroup);

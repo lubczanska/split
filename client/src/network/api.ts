@@ -22,6 +22,14 @@ export async function getLoggedInUser(): Promise<User> {
   return response.json();
 }
 
+export async function getUserOwed(): Promise<number> {
+  const response = await fetchData("http://localhost:5000/api/users/owed", {
+    method: "GET",
+    credentials: "include",
+  });
+  return response.json();
+}
+
 export interface SignUpCredentials {
   username: string;
   email: string;
@@ -65,6 +73,8 @@ export async function logOut() {
     credentials: "include",
   });
 }
+
+
 // Groups Api
 export async function fetchGroup(groupId : string) : Promise<Group> {
   const response = await fetchData("http://localhost:5000/api/groups/" + groupId, {

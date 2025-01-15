@@ -7,26 +7,27 @@ import mongoose from "mongoose";
 import createHttpError from "http-errors";
 import simplifyTransactions from "../util/balance";
 
-export const getBalance: RequestHandler = async (req, res, next) => {
+/*
+Get suggested transfers to balance debts
+*/
+export const getSettlements: RequestHandler = async (req, res, next) => {
   const groupId = req.params.groupId;
 
   try {
-    if (!mongoose.isValidObjectId(groupId)) {
-      throw createHttpError(400, "invalid expense id");
-    }
+    if (!mongoose.isValidObjectId(groupId))
+      throw createHttpError(400, "Invalid group id");
 
     const group = await GroupModel.findById(groupId).exec();
 
-    if (!group) {
-      throw createHttpError(404, "Group not found");
-    }
+    if (!group) throw createHttpError(404, "Group not found");
+
     const transfers = simplifyTransactions(group.memberBalance);
-    console.log(transfers)
     res.status(200).json(transfers);
   } catch (error) {
     next(error);
   }
 };
+
 /*
 Get all groups logged in user is a member of
 Accepts: user ID
@@ -76,7 +77,7 @@ export const getGroup: RequestHandler = async (req, res, next) => {
 };
 
 /*
-Creat new group
+Create new group
 Balance Array is filled with 0s
 Accepts: Group Name
          Group Emoji Avatar
@@ -84,7 +85,6 @@ Accepts: Group Name
          Group Members
 Validation: 
 */
-
 interface createGroupBody {
   name?: string;
   emoji?: string;
@@ -218,6 +218,18 @@ export const deleteGroup: RequestHandler = async (req, res, next) => {
     next(error);
   }
 };
+
+// export const getUserSpent: RequestHandler = async (req, res, next) => {
+//   const userId = req.session.userId;
+//   try {
+//     assertDefined(userId);
+//     const groups = await GroupModel.find({ owner: userId }).exec();
+//     res.status(200).json(groups);
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+
 
 /*
 TODO:

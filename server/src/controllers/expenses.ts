@@ -49,6 +49,9 @@ interface createExpenseBody {
   costSplit: Map<string, number>;
 }
 
+/*
+Add expense to Group Member Balance 
+*/
 const updateBalances = async (
   groupId: string,
   paidBy: string,
@@ -79,6 +82,9 @@ const updateBalances = async (
   group.save();
 };
 
+/*
+Remove expense from Group Member Balance 
+*/
 const clearBalances = async (
   groupId: string,
   paidBy: string,
@@ -127,7 +133,6 @@ export const createExpense: RequestHandler<
       throw createHttpError(400, "No required expense parameters");
 
     const split = new Map(Object.entries(costSplit));
-    // TODO: fix equal splits
     await updateBalances(groupId, paidBy, amount, members, split);
 
     const newExpense = await ExpenseModel.create({

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Group as GroupModel } from "../models/group";
 import * as Api from "../network/api";
-import GroupCard from "../components/group/GroupCard";
-import Button from "../components/Button";
+import GroupCard from "./group/GroupCard";
+import Button from "./Button";
 import { useNavigate } from "react-router-dom";
 import configData from "../config.json";
 import { User as UserModel } from "../models/user";
@@ -12,7 +12,6 @@ const Dashboard = () => {
   const [groups, setGroups] = useState<GroupModel[]>([]);
   const [GroupsLoading, setGroupsLoading] = useState(true);
   const [error, setError] = useState(false);
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,38 +37,38 @@ const Dashboard = () => {
   }, []);
 
   const addGroup = () => {
-    navigate(configData.ADD_GROUP_URL, {state: {user: loggedInUser}})
-  }
+    navigate(configData.ADD_GROUP_URL, { state: { user: loggedInUser } });
+  };
 
   const GroupGrid = (
-    <div className="flow-root grid grid-cols-2 md:grid-cols-3 gap-4">
+    <div className="flow-root px-8 py-16 grid grid-cols-2 md:grid-cols-3 gap-6">
       {groups.map((group) => (
-        <GroupCard key={group._id} group={group} />
+        <GroupCard key={group._id} group={group} username={loggedInUser ? loggedInUser.username : "" } />
       ))}
     </div>
   );
 
   return (
-      <div className="w-8/12 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 ">
-        <div className="flex items-center gap-8 justify-between mb-4">
-          <h5 className="text-xl font-bold leading-none text-gray-900">
-            Your Groups
-          </h5>
-            <Button label="New Group" onClick={addGroup} />
-        </div>
-        {GroupsLoading && <p className="text-white"> Loading...</p>}
-        {error && <p className="text-white">Something went wrong :( </p>}
-        {!GroupsLoading && !error && (
-          <>
-            {" "}
-            {groups.length > 0 ? (
-              GroupGrid
-            ) : (
-              <p className="text-white">Looks empty in here</p>
-            )}
-          </>
-        )}
+    <div className="p-4 bg-white border border-black rounded-lg sm:p-8 ">
+      <div className="flex items-center gap-8 justify-between mb-4">
+        <h5 className="text-2xl font-bold leading-none ">
+          Your Groups
+        </h5>
+        <Button label="New Group" onClick={addGroup} />
       </div>
+      {GroupsLoading && <p className="text-white"> Loading...</p>}
+      {error && <p className="text-white">Something went wrong :( </p>}
+      {!GroupsLoading && !error && (
+        <>
+          {" "}
+          {groups.length > 0 ? (
+            GroupGrid
+          ) : (
+            <p className="text-black py-4">Looks empty in here :(</p>
+          )}
+        </>
+      )}
+    </div>
   );
 };
 
