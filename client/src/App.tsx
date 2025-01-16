@@ -42,11 +42,10 @@ function App() {
       {loggedInUser && (
         <NavBar
           loggedInUser={loggedInUser}
-          onAvatarClicked={() => navigate(configData.DASHBOARD_URL)}
         />
       )}
 
-      <main className="mx-auto w-full p-4 md:p-6 2xl:p-10">
+      <main className="mx-auto  w-full p-4 md:p-6 2xl:p-10 ">
         <Routes>
           <Route path={configData.LANDING_URL} element={<Landing />} />
           <Route path={configData.DASHBOARD_URL} element={<Dashboard />} />

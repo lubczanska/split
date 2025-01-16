@@ -5,19 +5,19 @@ interface BalanceProps {
 }
 
 const Balance = ({ member, balance, currency }: BalanceProps) => {
-  let color = "text-gray-500";
+  let color = "text-base-content";
   if (balance) {
-    if (balance < 0) color = "text-red-600";
-    if (balance > 0) color = "text-green-600";
+    if (balance < 0) color = "text-error";
+    if (balance > 0) color = "text-success";
   }
   return (
-    <li className="py-3 sm:py-4 ">
-      <div className="flex items-center justify-between gap-4">
-        <div className="inline-flex items-center text-base font-semibold text-gray-900 ">
+    <li className="py-2 sm:py-3 ">
+      <div className="flex items-center justify-between gap-8">
+        <div className="inline-flex items-center  font-semibold ">
           {member}
         </div>
         <div
-          className={`inline-flex items-center text-base font-semibold ${color}`}
+          className={`inline-flex items-center font-semibold ${color}`}
         >
           {balance && balance > 0 ?  `+${balance} ${currency}` : `${balance} ${currency}`}
         </div>

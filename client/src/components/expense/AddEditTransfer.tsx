@@ -73,11 +73,11 @@ const AddEditTransfer = () => {
     <div>
       {errorText && <ErrorAlert text={errorText} />}
       <form
-        className="max-w-sm mx-auto border border-black rounded-xl p-8"
+        className="card w-2/3 mx-auto card-bordered bg-base-200"
         id="addTransferForm"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <h5 className="text-2xl font-bold pb-6">Add Transfer</h5>
+        <h5 className="card-title">Add Transfer</h5>
         <SelectField
           name="from"
           label="From"
@@ -128,10 +128,10 @@ const AddEditTransfer = () => {
         <button
           type="submit"
           form="addTransferForm"
-          className="text-black bg-green-300 border border-black hover:bg-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 my-2 w-full "
+          className="btn btn-primary my-2"
           disabled={isSubmitting}
         >
-          Submit
+          Add Transfer
         </button>
       </form>
     </div>

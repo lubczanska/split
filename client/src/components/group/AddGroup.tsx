@@ -43,16 +43,16 @@ const AddGroup = () => {
   };
 
   return (
-    <div>
+    <div className="card w-2/3 mx-auto card-bordered bg-base-200">
       {errorText && <ErrorAlert text={errorText} />}
 
       <form
-        className="max-w-sm mx-auto border border-black rounded-xl p-8"
+        className="card-body "
         id="addGroupForm"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <h5 className="text-2xl font-bold pb-6">Add Group</h5>
-        <div className="flex gap-4 justify-around">
+        <h5 className="card-title">Add Group</h5>
+        <div className="flex gap-20">
           <TextInputField
             name="name"
             label="Name"
@@ -90,60 +90,54 @@ const AddGroup = () => {
           registerOptions={{ required: "Required" }}
           error={errors.currency}
         />
-        <label className="block mb-2 text-sm font-medium pt-2">Members</label>
-        <div className="border border-black empty:border-0 rounded-lg bg-white">
-          <div className=" border-b border-black last:border-0">
-            <section
-              className={
-                "section flex gap-3 text-black text-sm  block w-full p-2.5 d"
-              }
-            >
-              <input
-                placeholder="name"
-                disabled
-                readOnly
-                value={location.state.user.username}
-                className={"focus:ring-green-500 focus:border-green-500 px-2"}
-              />
-            </section>
-          </div>
+        <label className="label">Members</label>
+
+        <div className="join join-vertical">
+          <input
+            placeholder="name"
+            readOnly
+            value={location.state.user.username}
+            className={"join-item input input-bordered  px-8"}
+          />
           {fields.map((field, index) => {
             return (
-              <div
-                key={field.id}
-                className=" border-b border-black last:border-0"
-              >
-                <section
-                  className={
-                    "section flex justify-between gap-3 text-black text-sm  block w-full py-2.5 px-4 d"
-                  }
-                  key={field.id}
-                >
+              <div key={field.id} className="join-item input input-bordered ">
+                <div className="flex items-center justify-between">
                   <input
+                    className={"input input-ghosted "}
                     placeholder="name"
                     {...register(`members.${index}.name` as const, {
                       required: true,
                     })}
-                    className={
-                      "focus:ring-green-500 focus:border-green-500" +
-                      errors?.members?.[index]?.name
-                        ? "error"
-                        : ""
-                    }
                   />
                   <button
                     type="button"
+                    className="btn btn-ghost btn-sm "
                     onClick={() => {
                       remove(index);
                     }}
                   >
-                    x
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
                   </button>
-                </section>
+                </div>
               </div>
             );
           })}
         </div>
+
         <Button
           type="button"
           label="Add member"
@@ -153,7 +147,7 @@ const AddGroup = () => {
         <button
           type="submit"
           form="addGroupForm"
-          className="text-black bg-green-300 border border-black hover:bg-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-full text-sm px-5  w-full py-2.5 text-center me-2 mb-2 mt-4"
+          className="btn btn-primary my-8"
           disabled={isSubmitting}
         >
           Create Group

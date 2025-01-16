@@ -14,8 +14,8 @@ const classes="flex flex-col items-start justify-end pt-4"
     if (balance < 0) {
       return (
         <div className={classes}>
-          <p className="text-red-700">You owe</p>
-          <p className="text-lg text-red-700 font-semibold">
+          <p className="text-error">You owe</p>
+          <p className="text-lg text-error font-semibold">
             {group.currency} {balance * -1}
           </p>
         </div>
@@ -39,10 +39,10 @@ const classes="flex flex-col items-start justify-end pt-4"
 
   return (
     <Link to={groupUrl}>
-      <div className="block w-full h-36 p-4 bg-white border border-black rounded-xl  hover:bg-gray-100 ">
-        <div className="flex gap-4 items-center">
+      <div className="card bg-base-200">
+        <div className="flex gap-4 items-start">
           <p className="font-normal text-2xl">{group.emoji}</p>
-          <h5 className="mb-2 text-xl font-bold tracking-tight text-black">
+          <h5 className="mb-2 text-xl font-bold">
             {group.name}
           </h5>
         </div>

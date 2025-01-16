@@ -21,7 +21,7 @@ const Group = () => {
   const [settlements, setSettlements] = useState<
     [string, string, number][] | null
   >(null);
-  const [reload, setReload] = useState(false)
+  const [reload, setReload] = useState(false);
 
   const navigate = useNavigate();
 
@@ -49,7 +49,7 @@ const Group = () => {
         alert(error);
       } finally {
         setExpensesLoading(false);
-        setReload(false)
+        setReload(false);
       }
     }
     getGroup();
@@ -113,8 +113,8 @@ const Group = () => {
     }
   }
   const expenseGrid = (
-    <div className="flow-root">
-      <ul role="list" className="divide-y divide-gray-200 ">
+    <div className="">
+      <ul role="list" className="flex flex-col items-center gap-2 w-xl">
         {expenses.map((expense) => (
           <Expense
             expense={expense}
@@ -129,8 +129,8 @@ const Group = () => {
   );
 
   const balances = (
-    <div className="flow-root">
-      <ul role="list" className="divide-y divide-gray-200 ">
+    <div className="">
+      <ul role="list" className="flex flex-col items-between gap-1 w-xl">
         {group &&
           group.members.map((member) => (
             <Balance
@@ -145,99 +145,107 @@ const Group = () => {
   );
   return (
     <div>
-      <div className="p-4 bg-white border border-black rounded-lg sm:p-8 ">
-        <div className="flex justify-between gap-5 mb-4">
-          {errorText && <ErrorAlert text={errorText} />}
+      {errorText && <ErrorAlert text={errorText} />}
+
+      <div className="">
+        {/* Group header start */}
+        <div className="flex justify-between">
           <div className="flex gap-5 py-4">
-            <h2 className="text-xl font-bold leading-none text-gray-900">
-              {group?.emoji}
-            </h2>
-            <h2 className="text-xl font-bold leading-none text-gray-900">
-              {group?.name}
-            </h2>
+            <h2 className="text-xl font-bold ">{group?.emoji}</h2>
+            <h2 className="text-xl font-bold ">{group?.name}</h2>
           </div>
-          <button
-            onClick={(e) => {
-              if (group) deleteGroup(group._id);
-              e.stopPropagation();
-            }}
-            className="justify-self-end text-base font-semibold text-red-500 hover:text-white "
-          >
-            DELETE GROUP
-          </button>
-          <Link to={configData.EDIT_GROUP_URL + group?._id}>
-            <button className="justify-self-end text-base font-semibold  hover:text-white ">
-              EDIT GROUP
+          <div className="card-actions">
+            <button
+              onClick={(e) => {
+                if (group) deleteGroup(group._id);
+                e.stopPropagation();
+              }}
+              className="btn btn-outline btn-secondary"
+            >
+              DELETE GROUP
             </button>
-          </Link>
-        </div>
-        <div className="flex justify-around">
-          <div className="flex flex-col items-center justify-start gap-4 mb-4 border border-black rounded-xl p-6 w-1/2">
-            <div className="flex items-center justify-between gap-4">
-              <h5 className="text-lg font-bold leading-none text-gray-900">
-                Your expenses
-              </h5>
-              <Link to={configData.ADD_EXPENSE_URL + group?._id}>
-                <Button type="button" label="Add expense" />
-              </Link>
-              <Link to={configData.ADD_TRANSFER_URL + group?._id}>
-                <Button type="button" label="Add transfer" />
-              </Link>
-            </div>
-            {expensesLoading && <p className="text-white"> Loading...</p>}
-            {error && <p className="text-white">Something went wrong :( </p>}
-            {!expensesLoading && !error && (
-              <>
-                {" "}
-                {expenses.length > 0 ? (
-                  expenseGrid
-                ) : (
-                  <p className="text-white">Looks empty in here</p>
-                )}
-              </>
-            )}
+            <Link to={configData.EDIT_GROUP_URL + group?._id}>
+              <button className="btn btn-outline btn-secondary">
+                EDIT GROUP
+              </button>
+            </Link>
           </div>
-          <div className="border border-black rounded-xl p-6 w-1/3">
+        </div>
+        {/* Group header end */}
+        <div className="flex justify-around">
+          {/* Expenses */}
+          <div className="card bg-base-200">
+            <div className="flex flex-col gap-4">
+              <span className="card-title">Your expenses</span>
+              <div className="card-actions">
+                <Link to={configData.ADD_EXPENSE_URL + group?._id}>
+                  <Button type="button" label="Add expense" />
+                </Link>
+                <Link to={configData.ADD_TRANSFER_URL + group?._id}>
+                  <Button type="button" label="Add transfer" />
+                </Link>
+              </div>
+            </div>
+            <div className="card-body">
+              {expensesLoading && <p className="text-white"> Loading...</p>}
+              {error && <p className="text-white">Something went wrong :( </p>}
+              {!expensesLoading && !error && (
+                <>
+                  {" "}
+                  {expenses.length > 0 ? (
+                    expenseGrid
+                  ) : (
+                    <p className="text-white">Looks empty in here</p>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+          {/* Expenses end */}
+          <div className="card bg-base-200">
             {settlements ? (
-              <div>
-                {" "}
-                <h6 className="text-lg font-bold leading-none text-gray-900 py-6">
-                  Suggested Reimbursements
-                </h6>
-                <div className={"mb-4 bg-yellow-300 rounded-full"}>
-                  <p>You are owed</p>
-                  <p className="font-semibold">
-                    {loggedInUser &&
-                      group?.memberBalance[loggedInUser.username]}{" "}
-                    {group?.currency}
-                  </p>
+              <div className="flex flex-col gap-6">
+                <div className={"card bg-primary text-primary-content"}>
+                  <div className="card-body p-0 m-0">
+                    <p>You are owed</p>
+                    <p className="font-semibold text-xl">
+                      {loggedInUser &&
+                        group?.memberBalance[loggedInUser.username]}{" "}
+                      {group?.currency}
+                    </p>
+                  </div>
                 </div>
+                <span className="card-title">Suggested Reimbursements</span>
                 {settlements.map(([from, to, amt]) => (
-                  <div className="flex gap-2 py-1">
+                  <div className="flex justify-between gap-2 py-1">
+                    <div className="flex gap-2">
                     <p className="font-semibold">{from}</p>
                     <p>owes</p>
                     <p className="font-semibold">{to} </p>
+                    </div>
                     <p className="">
                       {amt} {group?.currency}{" "}
                     </p>
-                    <Button
-                      label="Settle"
-                      onClick={(e: { stopPropagation: () => void; }) => {
+                    <button
+                      className="btn btn-secondary btn-xs justify-end"
+                      onClick={(e: { stopPropagation: () => void }) => {
                         e.stopPropagation();
                         settleDebt(from, to, amt);
                       }}
-                    />
+                    >
+                      Settle{" "}
+                    </button>
                   </div>
                 ))}
                 <Button label="Balances" onClick={() => setSettlements(null)} />
               </div>
             ) : (
-              <div>
-                <h6 className="text-lg font-bold leading-none text-gray-900 py-6">
-                  Balances
-                </h6>
+              <div className="flex flex-col gap-4">
+                <span className="card-title">Balances</span>
+                <div className="card-actions py-2">
+                  <Button label="get Settlements" onClick={getSettlements} />
+                </div>
                 {balances}
-                <Button label="get Settlements" onClick={getSettlements} />
               </div>
             )}
           </div>

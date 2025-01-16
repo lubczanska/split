@@ -25,35 +25,36 @@ const SelectField = ({
   ...props
 }: SelectFieldProps) => {
   return (
-    <div className="py-2">
-      <label className="block mb-2 text-sm font-medium text-black">
-        {label}
-      </label>
-      <select
-        id={name + "-select"}
-        // value={defaultVal}
-        className="bg-gray-50 border border-black text-black text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 "
-        {...props}
-        {...register(name, registerOptions)}
-      >
-        aria-invalid={error ? "true" : "false"}
-        {options.map((option) =>
-          option.value === defaultVal ? (
-            <option key={option.value} value={option.value} selected>
-              {option.label}
-            </option>
-          ) : (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          )
+    <div className="form-control">
+      <label className="label">{label}</label>
+      <div className="indicator">
+        {error && (
+          <span role="alert" className="indicator-item badge badge-error">
+            {" "}
+            {error.message}{" "}
+          </span>
         )}
-      </select>
-      {error && (
-        <p className="text-red-500" role="alert">
-          {error.message}
-        </p>
-      )}
+        <select
+          id={name + "-select"}
+          // value={defaultVal}
+          className="select select-bordered"
+          {...props}
+          {...register(name, registerOptions)}
+        >
+          aria-invalid={error ? "true" : "false"}
+          {options.map((option) =>
+            option.value === defaultVal ? (
+              <option key={option.value} value={option.value} selected>
+                {option.label}
+              </option>
+            ) : (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            )
+          )}
+        </select>
+      </div>
     </div>
   );
 };

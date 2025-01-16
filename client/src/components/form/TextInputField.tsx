@@ -20,19 +20,23 @@ const TextInputField = ({
   ...props
 }: TextInputFieldProps) => {
   return (
-    <div className="py-2">
-      <label className="block mb-2 text-sm font-medium ">
-        {label}
-      </label>
+    <div className="form-control">
+      <label className="label">{label}</label>
+      <div className="indicator">
+      {error && (
+        <span role="alert" className="indicator-item badge badge-error">
+          {" "}
+          {error.message}{" "}
+        </span>
+      )}
       <input
         id={name + "-input"}
         type="text"
-        className="bg-white border border-black text-black text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 d"
+        className="input input-bordered"
         {...props}
         {...register(name, registerOptions)}
         aria-invalid={error ? "true" : "false"}
-      />
-      {error && <p className="text-red-500" role="alert">{error.message}</p>}
+      /></div>
     </div>
   );
 };

@@ -88,11 +88,12 @@ const AddExpense = () => {
     <div>
       {errorText && <ErrorAlert text={errorText} />}
       <form
-        className="max-w-sm mx-auto border border-black rounded-xl p-8"
+        className="card w-2/3 mx-auto card-bordered bg-base-200"
         id="addExpenseForm"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <h5 className="text-2xl font-bold pb-6">Add Expense</h5>
+        <h5 className="card-title">Add Expense</h5>
+        <div className="flex gap-20">
         <TextInputField
           name="name"
           label="Name"
@@ -100,37 +101,53 @@ const AddExpense = () => {
           registerOptions={{ required: "Required" }}
           error={errors.name}
         />
-        <div className="flex gap-4">
-        <TextInputField
-          name="amount"
-          label="Amount"
-          register={register}
-          registerOptions={{
-            required: "Required",
-            pattern: {
-              value: /^\d+(?:\.\d{1,2})?$/gm,
-              message: "Impossible amount of money",
-            },
-            validate: {
-              positive: (v) => Number(v) >= 0,
-            },
-            onChange: () => {
-              if (equal) splitEqually();
-            },
-          }}
-          error={errors.amount}
-        />
-        <TextInputField
-          name="date"
-          label="Date"
-          type="date"
-          datepicker="true"
-          datepicker-buttons="true"
-          datepicker-autoselect-today="true"
+          <SelectField
+          name="category"
+          label="Category"
+          selected={{ value: "Others", label: "💵  Other" }}
+          options={[{ value: "Others", label: "💵  Other" },
+            { value: "Transport", label: "🚗  Transport" },
+            { value: "Food", label: "🍕  Food" },
+            { value: "Shopping", label:  "🛍️ Shopping" },
+            { value: "Entertainment", label:  "🛍️ Entertainment" }]}
+          defaultVal={groupMembers[0]}
           register={register}
           registerOptions={{ required: "Required" }}
-          error={errors.date}
+          error={errors.category}
         />
+        </div>
+
+        <div className="flex gap-20">
+          <TextInputField
+            name="amount"
+            label="Amount"
+            register={register}
+            registerOptions={{
+              required: "Required",
+              pattern: {
+                value: /^\d+(?:\.\d{1,2})?$/gm,
+                message: "Impossible amount of money",
+              },
+              validate: {
+                positive: (v) => Number(v) >= 0,
+              },
+              onChange: () => {
+                if (equal) splitEqually();
+              },
+            }}
+            error={errors.amount}
+          />
+          <TextInputField
+            name="date"
+            label="Date"
+            type="date"
+            datepicker="true"
+            datepicker-buttons="true"
+            datepicker-autoselect-today="true"
+            register={register}
+            registerOptions={{ required: "Required" }}
+            error={errors.date}
+          />
         </div>
         <SelectField
           name="paidBy"
@@ -148,28 +165,27 @@ const AddExpense = () => {
           <input
             type="checkbox"
             value=""
-            className="sr-only peer"
+            className="toggle toggle-primary"
             checked={equal}
             onChange={() => {
               if (!equal) splitEqually();
               setEqual(!equal);
             }}
           />
-          <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-green-200 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-400"></div>
           <span className="ms-3 text-sm font-medium text-gray-900\">
             Split Equally
           </span>
         </label>
-        <div className="my-4 border border-black empty:border-0 rounded-lg bg-white">
+        <div className="join join-vertical">
           {groupMembers.map((member, index) => {
             return (
               <div
                 key={member}
-                className=" border-b border-black last:border-0 section flex justify-around gap-3 text-black text-sm  block w-full p-2.5 d"
+                className=" flex justify-between bg-base-300 join-item p-3 input input-bordered"
               >
-                <div className="flex gap-3 w-64">
+                <div className="flex gap-4">
                   <input
-                    className="flex-start w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                    className="checkbox checkbox-primary"
                     type="checkbox"
                     checked={participants[index]}
                     onChange={() => {
@@ -179,9 +195,13 @@ const AddExpense = () => {
                   <label>{member}</label>
                 </div>
                 {participants[index] && (
-                  <div className="w-32 flex">
+                  <div className=" flex">
                     <input
-                      className={equal ? "w-20" : "disabled:hidden w-20"}
+                      className={
+                        "input font-semibold" + equal
+                          ? "max-w-20"
+                          : "disabled:hidden max-w-20"
+                      }
                       placeholder="0"
                       disabled={!participants[index] || equal}
                       id={"participant-" + member}
@@ -198,22 +218,23 @@ const AddExpense = () => {
                       })}
                     />
 
-                    <p> {group?.currency} </p>
+                    <p className="font-semibold"> {group?.currency} </p>
                   </div>
                 )}
               </div>
             );
           })}
         </div>
-
-        <button
-          type="submit"
-          form="addExpenseForm"
-          className="text-black bg-green-300 border border-black hover:bg-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-full text-sm px-5  w-full py-2.5 text-center me-2 mb-2 "
-          disabled={isSubmitting}
-        >
-          Submit
-        </button>
+        <div className="card-actions">
+          <button
+            type="submit"
+            form="addExpenseForm"
+            className="btn btn-primary my-2"
+            disabled={isSubmitting}
+          >
+            Submit
+          </button>
+        </div>
       </form>
     </div>
   );

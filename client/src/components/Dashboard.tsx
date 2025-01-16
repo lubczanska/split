@@ -49,8 +49,8 @@ const Dashboard = () => {
   );
 
   return (
-    <div className="p-4 bg-white border border-black rounded-lg sm:p-8 ">
-      <div className="flex items-center gap-8 justify-between mb-4">
+    <div className="">
+      <div className="flex items-center gap-8 justify-between my-4">
         <h5 className="text-2xl font-bold leading-none ">
           Your Groups
         </h5>

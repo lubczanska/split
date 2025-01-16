@@ -19,7 +19,7 @@ const Expense = ({
       Transfer: "💸",
       Transport: "🚗",
       Food: "🍕",
-      Shoppng: "🛍️",
+      Shopping: "🛍️",
       Entertainment: "🛍️",
       Home: "🛍️",
       Accomodation: "🛏️",
@@ -28,34 +28,41 @@ const Expense = ({
   }
 
   return (
-    <li className="py-3 sm:py-4 ">
-      <div className="flex items-center gap-4">
+    <li className=" bg-base-300 p-5 w-full rounded-lg ">  
+      <span
+        className="flex items-center gap-4 justify-between"
+        onClick={() => OnExpenseClicked(expense)}
+      >
         <p className="text-2xl ">{categoryEmoji(expense.category)}</p>
-        <div
-          className="flex flex-col flex-1 min-w-0 ms-4 items-start"
-          onClick={() => OnExpenseClicked(expense)}
-        >
-          <p className="text-sm font-medium text-gray-900 truncate ">
-            {expense.name}
-          </p>
-          <p className="text-sm text-gray-500 truncate ">
-            Paid by {expense.paidBy}
-          </p>
+        <div className="grow flex flex-col items-start">
+          <p className="text-sm font-semibold">{expense.name}</p>
+          <p className="text-sm ">Paid by {expense.paidBy}</p>
         </div>
-        <div className="inline-flex items-center text-base font-semibold text-gray-900 ">
-          {`${expense.amount} ${currency} `}
-        </div>
+        <p className="font-semibold">{`${expense.amount} ${currency} `}</p>
 
         <button
           onClick={(e) => {
             OnDeleteClicked(expense);
             e.stopPropagation();
           }}
-          className="inline-flex items-center text-base font-semibold text-red-500 hover:text-white text-right"
+          className="btn btn-ghost"
         >
-          DELETE
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
         </button>
-      </div>
+      </span>
     </li>
   );
 };
