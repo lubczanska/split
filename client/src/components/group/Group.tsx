@@ -8,6 +8,7 @@ import { Link, useNavigate, useParams } from "react-router";
 import Button from "../Button";
 import configData from "../../config.json";
 import Balance from "./Balance";
+import ErrorAlert from "../ErrorAlert";
 
 const Group = () => {
   const params = useParams();
@@ -16,9 +17,11 @@ const Group = () => {
   const [expenses, setExpenses] = useState<ExpenseModel[]>([]);
   const [expensesLoading, setExpensesLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [errorText, setErrorText] = useState<string | null>(null);
   const [settlements, setSettlements] = useState<
     [string, string, number][] | null
   >(null);
+  const [reload, setReload] = useState(false)
 
   const navigate = useNavigate();
 
@@ -46,10 +49,11 @@ const Group = () => {
         alert(error);
       } finally {
         setExpensesLoading(false);
+        setReload(false)
       }
     }
     getGroup();
-  }, [navigate, params.groupId]);
+  }, [navigate, params.groupId, reload]);
 
   async function deleteExpense(expense: ExpenseModel) {
     try {
@@ -75,13 +79,39 @@ const Group = () => {
     }
   }
 
-  async function settle() {
+  async function getSettlements() {
     if (group) {
       const res = await Api.fetchGroupSettlement(group._id);
       setSettlements(res);
     }
   }
 
+  async function settleDebt(from: string, to: string, amount: number) {
+    try {
+      amount = Number(amount);
+      const input: Api.ExpenseInput = {
+        name: "transfer",
+        amount: amount,
+        paidBy: from,
+        date: new Date().toISOString().split("T")[0],
+        category: "Transfer",
+        members: [to],
+        costSplit: Object.fromEntries([[to, amount]]),
+      };
+      if (group) {
+        const expense = await Api.createExpense(group._id, input);
+        setExpenses([...expenses, expense]);
+        if (group) {
+          const newGroup = await Api.fetchGroup(group._id);
+          setGroup(newGroup);
+        }
+        //reload properly
+      }
+    } catch (error) {
+      if (error instanceof Error) setErrorText(error.message);
+      else alert(error);
+    }
+  }
   const expenseGrid = (
     <div className="flow-root">
       <ul role="list" className="divide-y divide-gray-200 ">
@@ -117,6 +147,7 @@ const Group = () => {
     <div>
       <div className="p-4 bg-white border border-black rounded-lg sm:p-8 ">
         <div className="flex justify-between gap-5 mb-4">
+          {errorText && <ErrorAlert text={errorText} />}
           <div className="flex gap-5 py-4">
             <h2 className="text-xl font-bold leading-none text-gray-900">
               {group?.emoji}
@@ -135,12 +166,10 @@ const Group = () => {
             DELETE GROUP
           </button>
           <Link to={configData.EDIT_GROUP_URL + group?._id}>
-          <button
-          
-            className="justify-self-end text-base font-semibold  hover:text-white "
-          >
-            EDIT GROUP
-          </button></Link>
+            <button className="justify-self-end text-base font-semibold  hover:text-white ">
+              EDIT GROUP
+            </button>
+          </Link>
         </div>
         <div className="flex justify-around">
           <div className="flex flex-col items-center justify-start gap-4 mb-4 border border-black rounded-xl p-6 w-1/2">
@@ -191,6 +220,13 @@ const Group = () => {
                     <p className="">
                       {amt} {group?.currency}{" "}
                     </p>
+                    <Button
+                      label="Settle"
+                      onClick={(e: { stopPropagation: () => void; }) => {
+                        e.stopPropagation();
+                        settleDebt(from, to, amt);
+                      }}
+                    />
                   </div>
                 ))}
                 <Button label="Balances" onClick={() => setSettlements(null)} />
@@ -201,7 +237,7 @@ const Group = () => {
                   Balances
                 </h6>
                 {balances}
-                <Button label="get Settlements" onClick={settle} />
+                <Button label="get Settlements" onClick={getSettlements} />
               </div>
             )}
           </div>

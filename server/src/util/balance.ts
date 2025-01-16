@@ -7,7 +7,6 @@ function simplifyTransactions(balances: Map<string, number>) {
     if (value > 0) owed.push({ value, key });
     else if (value < 0) owing.push({ value: -1 * value, key });
   });
-  console.log(owing, owed);
   while (owing && owed) {
     owing.sort();
     owed.sort();
@@ -19,7 +18,6 @@ function simplifyTransactions(balances: Map<string, number>) {
     const min = Math.min(maxOwing.value, maxOwed.value);
 
     transfers.push([maxOwing.key, maxOwed.key, min]);
-    console.log(transfers)
     if (maxOwing.value < maxOwed.value) {
       owed.push({ value: Math.round((maxOwed.value - maxOwing.value + Number.EPSILON)*100) /100, key: maxOwed.key });
     } else if (maxOwing.value > maxOwed.value) {

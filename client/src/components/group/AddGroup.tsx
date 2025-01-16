@@ -6,6 +6,7 @@ import Button from "../Button";
 import { useLocation, useNavigate } from "react-router";
 import configData from "../../config.json";
 import { useState } from "react";
+import ErrorAlert from "../ErrorAlert";
 
 const AddGroup = () => {
   const [errorText, setErrorText] = useState<string | null>(null);
@@ -43,7 +44,8 @@ const AddGroup = () => {
 
   return (
     <div>
-      <p>{errorText}</p>
+      {errorText && <ErrorAlert text={errorText} />}
+
       <form
         className="max-w-sm mx-auto border border-black rounded-xl p-8"
         id="addGroupForm"

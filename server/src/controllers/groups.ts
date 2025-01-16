@@ -110,13 +110,15 @@ export const createGroup: RequestHandler<
     if (!name || !emoji || !currency || !members)
       throw createHttpError(400, "No required group parameters");
 
+    const memberNames = members.map((a) => a.name);
+    if (memberNames.length !== new Set(memberNames).size)
+      throw Error("Every member needs a unique name");
     // validate members and create balance table, everyone starts out at 0
     const balance = new Map<string, number>();
-    members.forEach((member) => {
-      if (!member.name) throw createHttpError(400, "Group members need a name");
-      balance.set(member.name, 0);
+    memberNames.forEach((name) => {
+      if (!name) throw createHttpError(400, "Group members need a name");
+      balance.set(name, 0);
     });
-    console.log(balance);
 
     const newGroup = await GroupModel.create({
       name: name,
@@ -141,7 +143,7 @@ interface updateGroupParams {
 interface updateGroupBody {
   name?: string;
   emoji?: string;
-  currency?: string;
+  members?: { name: string }[];
 }
 
 /*
@@ -161,13 +163,13 @@ export const updateGroup: RequestHandler<
   const groupId = req.params.groupId;
   const name = req.body.name;
   const emoji = req.body.emoji;
-  const currency = req.body.currency;
-  const userId = req.session.userId;
+
+  const members = req.body.members;
   try {
-    assertDefined(userId);
     // do better validation
-    if (!name || !emoji || !currency)
+    if (!name || !emoji || !members) {
       throw createHttpError(400, "No required group parameters");
+    }
 
     const group = await GroupModel.findById(groupId).exec();
 
@@ -175,9 +177,19 @@ export const updateGroup: RequestHandler<
       throw createHttpError(404, "Group not found");
     }
 
+    // validate members and create balance table, everyone new starts out at 0
+    const memberNames = members.map((a) => a.name);
+    if (memberNames.length !== new Set(memberNames).size)
+      throw Error("Every member needs a unique name");
+
+    memberNames.slice(group.members.length).forEach((name) => {
+      if (!name) throw createHttpError(400, "Group members need a name");
+      group.members.push({ name: name });
+      group.memberBalance.set(name, 0);
+    });
+
     group.name = name;
     group.emoji = emoji;
-    group.currency = currency;
     const updatedGroup = await group.save();
 
     res.status(200).json(updatedGroup);
@@ -229,7 +241,6 @@ export const deleteGroup: RequestHandler = async (req, res, next) => {
 //     next(error);
 //   }
 // };
-
 
 /*
 TODO:

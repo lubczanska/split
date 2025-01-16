@@ -7,6 +7,7 @@ import { useNavigate, useParams } from "react-router";
 import * as Api from "../../network/api";
 import configData from "../../config.json";
 import { ExpenseInput } from "../../network/api";
+import ErrorAlert from "../ErrorAlert";
 
 const AddExpense = () => {
   const navigate = useNavigate();
@@ -85,7 +86,7 @@ const AddExpense = () => {
 
   return (
     <div>
-      <p className="text-red-700 text-semibold">{errorText}</p>
+      {errorText && <ErrorAlert text={errorText} />}
       <form
         className="max-w-sm mx-auto border border-black rounded-xl p-8"
         id="addExpenseForm"

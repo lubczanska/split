@@ -1,5 +1,5 @@
 import { useFieldArray, useForm } from "react-hook-form";
-import { createGroup, GroupInput } from "../../network/api";
+import { GroupInput } from "../../network/api";
 import SelectField from "../form/SelectField";
 import TextInputField from "../form/TextInputField";
 import Button from "../Button";
@@ -8,6 +8,7 @@ import configData from "../../config.json";
 import { useEffect, useState } from "react";
 import { Group as GroupModel } from "../../models/group";
 import * as Api from "../../network/api";
+import ErrorAlert from "../ErrorAlert";
 
 const EditGroup = () => {
   const [errorText, setErrorText] = useState<string | null>(null);
@@ -17,6 +18,20 @@ const EditGroup = () => {
   const params = useParams();
   const navigate = useNavigate();
 
+  const {
+    register,
+    control,
+    handleSubmit,
+    setValue,
+    formState: { errors, isSubmitting },
+  } = useForm<GroupInput>({
+    defaultValues: {
+      members: group?.members,
+      name: group?.name,
+      emoji: group?.emoji,
+    },
+  });
+
   useEffect(() => {
     async function getGroup() {
       try {
@@ -25,6 +40,9 @@ const EditGroup = () => {
         if (groupId) {
           const group = await Api.fetchGroup(groupId);
           setGroup(group);
+          setValue("emoji", group.emoji);
+          setValue("name", group.name);
+          setValue("members", group.members);
         } else {
           navigate(configData.DASHBOARD_URL);
         }
@@ -36,35 +54,23 @@ const EditGroup = () => {
       }
     }
     getGroup();
-  }, [navigate, params.groupId]);
-
-  const {
-    register,
-    control,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<GroupInput>({
-    defaultValues: {
-      members: group?.members,
-      name: group?.name,
-      emoji: group?.emoji,
-    },
-  });
+  }, [navigate, params.groupId, setValue]);
 
   const { fields, append, remove } = useFieldArray({
     name: "members",
     control,
   });
 
-  const onSubmit = async (group: GroupInput) => {
+  const onSubmit = async (input: GroupInput) => {
     try {
       // unique member names validation
-      const members = group.members.map((a) => a.name);
+      const members = input.members.map((a) => a.name);
       if (members.length !== new Set(members).size)
         throw Error("Every member needs a unique name");
-
-      const createResponse = await createGroup(group);
-      navigate(configData.VIEW_GROUP_URL + createResponse._id);
+      if (group) {
+        const editResponse = await Api.updateGroup(group?._id, input);
+        navigate(configData.VIEW_GROUP_URL + editResponse._id);
+      }
     } catch (error) {
       if (error instanceof Error) setErrorText(error.message);
       else alert(error);
@@ -76,7 +82,7 @@ const EditGroup = () => {
       {loading && <p className="text-white"> Loading...</p>}
       {!loading && (
         <div>
-          <p>{errorText}</p>
+          {errorText && <ErrorAlert text={errorText} />}
           <form
             className="max-w-sm mx-auto border border-black rounded-xl p-8"
             id="editGroupForm"
@@ -110,13 +116,6 @@ const EditGroup = () => {
               Members
             </label>
             <div className="border border-black empty:border-0 rounded-lg bg-white">
-              <div className=" border-b border-black last:border-0">
-                <section
-                  className={
-                    "section flex gap-3 text-black text-sm  block w-full p-2.5 d"
-                  }
-                ></section>
-              </div>
               {fields.map((field, index) => {
                 return (
                   <div
@@ -129,26 +128,46 @@ const EditGroup = () => {
                       }
                       key={field.id}
                     >
-                      <input
-                        placeholder="name"
-                        {...register(`members.${index}.name` as const, {
-                          required: true,
-                        })}
-                        className={
-                          "focus:ring-green-500 focus:border-green-500" +
-                          errors?.members?.[index]?.name
-                            ? "error"
-                            : ""
-                        }
-                      />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          remove(index);
-                        }}
-                      >
-                        x
-                      </button>
+                      <div>
+                        {group && index < group?.members.length ? (
+                          <input
+                            placeholder="name"
+                            {...register(`members.${index}.name` as const, {
+                              required: true,
+                            })}
+                            disabled
+                            className={
+                              "focus:ring-green-500 focus:border-green-500" +
+                              errors?.members?.[index]?.name
+                                ? "error"
+                                : ""
+                            }
+                          />
+                        ) : (
+                          <div>
+                            <input
+                              placeholder="name"
+                              {...register(`members.${index}.name` as const, {
+                                required: true,
+                              })}
+                              className={
+                                "focus:ring-green-500 focus:border-green-500" +
+                                errors?.members?.[index]?.name
+                                  ? "error"
+                                  : ""
+                              }
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                remove(index);
+                              }}
+                            >
+                              x
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </section>
                   </div>
                 );
