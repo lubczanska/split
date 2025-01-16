@@ -247,3 +247,37 @@ export async function deleteExpense(expenseId: string) {
     credentials: "include",
   });
 }
+
+// Other
+
+export async function fetchGroupTotal(groupId: string): Promise<number> {
+  const response = await fetchData(
+    "http://localhost:5000/api/groups/total/" + groupId,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+  return response.json();
+}
+
+export async function fetchGroupCategoryTotal(groupId: string): Promise<[string, number]> {
+  const response = await fetchData(
+    "http://localhost:5000/api/groups/categoryTotal/" + groupId,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+  return response.json();
+}
+export async function fetchGroupUserTotal(groupId: string): Promise<[string, number]> {
+  const response = await fetchData(
+    "http://localhost:5000/api/groups/userTotal/" + groupId,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
+  return response.json();
+}

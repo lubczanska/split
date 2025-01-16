@@ -1,80 +1,43 @@
 import { Expense as ExpenseModel } from "../../models/expense";
 
 interface ViewExpenseProps {
-  expense: ExpenseModel;
-  onDismiss: () => void;
-  onEditExpenseClicked: (expense: ExpenseModel) => void;
-  onDeleteExpenseClicked: (expense: ExpenseModel) => void;
+  expense: ExpenseModel | null;
+  currency?: string;
 }
 
-const ViewExpense = ({
-  expense,
-  onDismiss,
-  onEditExpenseClicked,
-  onDeleteExpenseClicked,
-}: ViewExpenseProps) => {
-  return (
-    // <!-- Main modal -->
-    <div
-      id="viewexpense-modal"
-      aria-hidden="true"
-      className="show overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
-    >
-      <div className="relative p-4 w-full max-w-md max-h-full">
-        {/* <!-- Modal content --> */}
-        <div className="relative bg-white rounded-lg shadow ">
-          {/* <!-- Modal header --> */}
-          <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t ">
-            <h3 className="text-xl font-semibold text-gray-900 ">
-              {expense.name}
-            </h3>
-            <button
-              onClick={onDismiss}
-              type="button"
-              className="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center "
-              data-modal-hide="authentication-modal"
+const ViewExpense = ({ expense, currency }: ViewExpenseProps) => {
+  return expense ? (
+    <div className="flex flex-col gap-2">
+      <p className="text-xl">{expense.category}</p>
+      <h3 className="font-bold text-xl text-primary">{expense.name}</h3>
+      <p className="">{expense.date}</p>
+      <div className="flex flex-col items-start">
+        <p className="font-bold">paid By</p>
+        <div className="w-full input input-bordered flex justify-between py-2 items-center">
+          <p>{expense.paidBy}</p>
+          <p className="font-bold">
+            {expense.amount} {currency}
+          </p>
+        </div>
+      </div>
+      <div className="flex flex-col items-start">
+        <p className="font-bold"> for {expense.members.length} people:</p>
+        <div className="w-full join join-vertical">
+          {expense.members.map((member) => (
+            <div
+              key={member}
+              className="join-item input input-bordered flex justify-between py-2 items-center"
             >
-              <svg
-                className="w-3 h-3"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 14 14"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                />
-              </svg>
-              <span className="sr-only">Close modal</span>
-            </button>
-          </div>
-          {/* <!-- Modal body --> */}
-          <div className="p-4 md:p-5">
-            <p>{expense.name}</p>
-            <p> ${expense.amount}</p>
-            <button
-              onClick={() => onEditExpenseClicked(expense)}
-              type="button"
-              className="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 "
-            >
-              EDIT
-            </button>
-            <button
-              onClick={() => onDeleteExpenseClicked(expense)}
-              type="button"
-              className="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 "
-            >
-              DELETE
-            </button>
-          </div>
+              <p>{member}</p>
+              <p className="font-bold">
+                {expense.costSplit[member]} {currency}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
     </div>
-  );
+  ) : null;
 };
 
 export default ViewExpense;

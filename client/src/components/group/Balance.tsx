@@ -11,7 +11,7 @@ const Balance = ({ member, balance, currency }: BalanceProps) => {
     if (balance > 0) color = "text-success";
   }
   return (
-    <li className="py-2 sm:py-3 ">
+    <li className="">
       <div className="flex items-center justify-between gap-8">
         <div className="inline-flex items-center  font-semibold ">
           {member}

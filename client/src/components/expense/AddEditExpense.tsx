@@ -92,29 +92,43 @@ const AddExpense = () => {
         id="addExpenseForm"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <h5 className="card-title">Add Expense</h5>
+        <div className="flex justify-between">
+          <h5 className="card-title">Add Expense</h5>
+          <svg
+            className="h-6 w-6 fill-current md:h-8 md:w-8"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+          >
+            <path d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z"></path>
+          </svg>
+        </div>
+
         <div className="flex gap-20">
-        <TextInputField
-          name="name"
-          label="Name"
-          register={register}
-          registerOptions={{ required: "Required" }}
-          error={errors.name}
-        />
+          <TextInputField
+            name="name"
+            label="Name"
+            register={register}
+            registerOptions={{ required: "Required" }}
+            error={errors.name}
+          />
           <SelectField
-          name="category"
-          label="Category"
-          selected={{ value: "Others", label: "💵  Other" }}
-          options={[{ value: "Others", label: "💵  Other" },
-            { value: "Transport", label: "🚗  Transport" },
-            { value: "Food", label: "🍕  Food" },
-            { value: "Shopping", label:  "🛍️ Shopping" },
-            { value: "Entertainment", label:  "🛍️ Entertainment" }]}
-          defaultVal={groupMembers[0]}
-          register={register}
-          registerOptions={{ required: "Required" }}
-          error={errors.category}
-        />
+            name="category"
+            label="Category"
+            selected={{ value: "Others", label: "💵  Other" }}
+            options={[
+              { value: "Others", label: "💵  Other" },
+              { value: "Transport", label: "🚗  Transport" },
+              { value: "Food", label: "🍕  Food" },
+              { value: "Shopping", label: "🛍️ Shopping" },
+              { value: "Entertainment", label: "🛍️ Entertainment" },
+            ]}
+            defaultVal={groupMembers[0]}
+            register={register}
+            registerOptions={{ required: "Required" }}
+            error={errors.category}
+          />
         </div>
 
         <div className="flex gap-20">

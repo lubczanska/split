@@ -36,42 +36,40 @@ function App() {
   }, []);
 
   return (
-    // page wrapper
-    <div className="h-screen w-full relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
-      {/* navbar for logged in users */}
-      {loggedInUser && (
-        <NavBar
-          loggedInUser={loggedInUser}
-        />
-      )}
+    <div className="bg-base-300">
+      {/* // page wrapper */}
+      <div className="root-wrapper min-h-screen w-full relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+        {/* navbar for logged in users */}
+        {loggedInUser && <NavBar loggedInUser={loggedInUser} />}
 
-      <main className="mx-auto  w-full p-4 md:p-6 2xl:p-10 ">
-        <Routes>
-          <Route path={configData.LANDING_URL} element={<Landing />} />
-          <Route path={configData.DASHBOARD_URL} element={<Dashboard />} />
-          <Route path={configData.ADD_GROUP_URL} element={<AddGroup />} />
-          <Route path={configData.EDIT_GROUP_URL} element={<EditGroup />} />
-          <Route path={configData.VIEW_GROUP_URL} element={<Group />} />
-          <Route path={configData.ADD_EXPENSE_URL} element={<AddExpense />} />
-          <Route
-            path={configData.ADD_TRANSFER_URL}
-            element={<AddEditTransfer />}
-          />
-          <Route
-            path="/login"
-            element={
-              <LogIn
-                onLoginSuccessful={(user) => {
-                  console.log(user);
-                  setLoggedInUser(user);
-                  navigate("/dashboard");
-                }}
-              />
-            }
-          />
-          <Route path="/*" element={<NotFound />} />
-        </Routes>
-      </main>
+        <main className="mx-auto  w-full p-4 md:p-6 2xl:p-10 ">
+          <Routes>
+            <Route path={configData.LANDING_URL} element={<Landing />} />
+            <Route path={configData.DASHBOARD_URL} element={<Dashboard />} />
+            <Route path={configData.ADD_GROUP_URL} element={<AddGroup />} />
+            <Route path={configData.EDIT_GROUP_URL} element={<EditGroup />} />
+            <Route path={configData.VIEW_GROUP_URL} element={<Group />} />
+            <Route path={configData.ADD_EXPENSE_URL} element={<AddExpense />} />
+            <Route
+              path={configData.ADD_TRANSFER_URL}
+              element={<AddEditTransfer />}
+            />
+            <Route
+              path="/login"
+              element={
+                <LogIn
+                  onLoginSuccessful={(user) => {
+                    console.log(user);
+                    setLoggedInUser(user);
+                    navigate("/dashboard");
+                  }}
+                />
+              }
+            />
+            <Route path="/*" element={<NotFound />} />
+          </Routes>
+        </main>
+      </div>
     </div>
   );
 }

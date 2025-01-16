@@ -18,7 +18,7 @@ const NavBar = ({ loggedInUser}: NavBarProps) => {
   }
 
   return (
-    <header className="navbar bg-base-200 rounded-xl py-3 px-6">
+    <header className="navbar bg-base-100 rounded-xl py-3 px-6">
       <div className="navbar-start">
           <span className="self-center text-xl font-semibold whitespace-nowrap">
             @{loggedInUser ? loggedInUser.username : ""}

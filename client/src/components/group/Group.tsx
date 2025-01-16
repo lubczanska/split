@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Expense as ExpenseModel } from "../../models/expense";
 import { Group as GroupModel } from "../../models/group";
 import { User as UserModel } from "../../models/user";
@@ -9,6 +9,9 @@ import Button from "../Button";
 import configData from "../../config.json";
 import Balance from "./Balance";
 import ErrorAlert from "../ErrorAlert";
+import ViewExpense from "../expense/ViewExpense";
+import Settlements from "./Settlements";
+import DebtStat from "./DebtStat";
 
 const Group = () => {
   const params = useParams();
@@ -22,6 +25,8 @@ const Group = () => {
     [string, string, number][] | null
   >(null);
   const [reload, setReload] = useState(false);
+  const [showExpense, setShowExpense] = useState<ExpenseModel | null>(null);
+  const expenseRef = useRef<HTMLDialogElement | null>(null);
 
   const navigate = useNavigate();
 
@@ -85,6 +90,24 @@ const Group = () => {
       setSettlements(res);
     }
   }
+  async function getTotal() {
+    if (group) {
+      const res = await Api.fetchGroupTotal(group._id);
+      console.log(res);
+    }
+  }
+  async function getCategoryTotal() {
+    if (group) {
+      const res = await Api.fetchGroupCategoryTotal(group._id);
+      console.log(res);
+    }
+  }
+  async function getUserTotal() {
+    if (group) {
+      const res = await Api.fetchGroupUserTotal(group._id);
+      console.log(res);
+    }
+  }
 
   async function settleDebt(from: string, to: string, amount: number) {
     try {
@@ -114,13 +137,16 @@ const Group = () => {
   }
   const expenseGrid = (
     <div className="">
-      <ul role="list" className="flex flex-col items-center gap-2 w-xl">
+      <ul role="list" className="flex flex-col items-center gap-2 w-full">
         {expenses.map((expense) => (
           <Expense
             expense={expense}
             currency={group ? group?.currency : ""}
             key={expense._id}
-            OnExpenseClicked={() => console.log(expense)}
+            OnExpenseClicked={() => {
+              if (expenseRef.current) expenseRef.current.showModal();
+              setShowExpense(expense);
+            }}
             OnDeleteClicked={(expense) => deleteExpense(expense)}
           />
         ))}
@@ -130,7 +156,7 @@ const Group = () => {
 
   const balances = (
     <div className="">
-      <ul role="list" className="flex flex-col items-between gap-1 w-xl">
+      <ul role="list" className="flex flex-col items-between gap-2 w-full">
         {group &&
           group.members.map((member) => (
             <Balance
@@ -148,8 +174,33 @@ const Group = () => {
       {errorText && <ErrorAlert text={errorText} />}
 
       <div className="">
+        {/* Modals */}
+        {/* <ViewExpense
+          onClose={() => {
+            setShowExpense(null);
+            if (expenseRef.current) expenseRef.current.close();
+          }}
+          ref={expenseRef}
+          expense={showExpense}
+        /> */}
+        <dialog id="show_expense_modal" className="modal" ref={expenseRef}>
+          <div className="modal-box">
+            <form method="dialog">
+              <button
+                className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+                onClick={() => {
+                  setShowExpense(null);
+                  if (expenseRef.current) expenseRef.current.close();
+                }}
+              >
+                ✕
+              </button>
+            </form>
+            <ViewExpense expense={showExpense} currency={group?.currency} />
+          </div>
+        </dialog>
         {/* Group header start */}
-        <div className="flex justify-between">
+        <div className="flex justify-between pt-2 pb-6">
           <div className="flex gap-5 py-4">
             <h2 className="text-xl font-bold ">{group?.emoji}</h2>
             <h2 className="text-xl font-bold ">{group?.name}</h2>
@@ -172,12 +223,12 @@ const Group = () => {
           </div>
         </div>
         {/* Group header end */}
-        <div className="flex justify-around">
+        <div className="flex flex-wrap justify-around gap-10">
           {/* Expenses */}
-          <div className="card bg-base-200">
+          <div className="card card-compact bg-base-100 basis-2/3">
             <div className="flex flex-col gap-4">
               <span className="card-title">Your expenses</span>
-              <div className="card-actions">
+              <div className="card-actions gap-4">
                 <Link to={configData.ADD_EXPENSE_URL + group?._id}>
                   <Button type="button" label="Add expense" />
                 </Link>
@@ -202,52 +253,49 @@ const Group = () => {
             </div>
           </div>
           {/* Expenses end */}
-          <div className="card bg-base-200">
+          <div className="card bg-base-100 grow basis-1/4">
+          {/* Debt stat */}
+            <DebtStat debt={loggedInUser ? group?.memberBalance[loggedInUser.username] : 0}
+            currency={group?.currency}
+            onClick={getSettlements}
+            showButton={!settlements}
+            />
             {settlements ? (
-              <div className="flex flex-col gap-6">
-                <div className={"card bg-primary text-primary-content"}>
-                  <div className="card-body p-0 m-0">
-                    <p>You are owed</p>
-                    <p className="font-semibold text-xl">
-                      {loggedInUser &&
-                        group?.memberBalance[loggedInUser.username]}{" "}
-                      {group?.currency}
-                    </p>
-                  </div>
-                </div>
-                <span className="card-title">Suggested Reimbursements</span>
-                {settlements.map(([from, to, amt]) => (
-                  <div className="flex justify-between gap-2 py-1">
-                    <div className="flex gap-2">
-                    <p className="font-semibold">{from}</p>
-                    <p>owes</p>
-                    <p className="font-semibold">{to} </p>
-                    </div>
-                    <p className="">
-                      {amt} {group?.currency}{" "}
-                    </p>
-                    <button
-                      className="btn btn-secondary btn-xs justify-end"
-                      onClick={(e: { stopPropagation: () => void }) => {
-                        e.stopPropagation();
-                        settleDebt(from, to, amt);
-                      }}
-                    >
-                      Settle{" "}
-                    </button>
-                  </div>
-                ))}
-                <Button label="Balances" onClick={() => setSettlements(null)} />
+              <div>
+                <Settlements
+                  settlements={settlements}
+                  currency={group?.currency}
+                  settleDebt={settleDebt}
+                />
+                <button
+                  className="btn btn-circle my-8"
+                  onClick={() => setSettlements(null)}
+                >
+                  ✕
+                </button>
               </div>
             ) : (
               <div className="flex flex-col gap-4">
                 <span className="card-title">Balances</span>
-                <div className="card-actions py-2">
-                  <Button label="get Settlements" onClick={getSettlements} />
-                </div>
                 {balances}
               </div>
             )}
+          </div>
+          <div className="card bg-base-100 grow">
+            <div className="card-actions gap-4 justify-center">
+              <button className="btn btn-secondary grow" onClick={getTotal}>
+                Total
+              </button>
+              <button
+                className="btn btn-secondary grow"
+                onClick={getCategoryTotal}
+              >
+                Category Total
+              </button>
+              <button className="btn btn-secondary grow" onClick={getUserTotal}>
+                User Total
+              </button>
+            </div>
           </div>
         </div>
       </div>

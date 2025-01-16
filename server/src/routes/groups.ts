@@ -2,11 +2,20 @@ import express from "express";
 import * as GroupsController from "../controllers/groups";
 
 const router = express.Router();
-router.get("/balance/:groupId", GroupsController.getSettlements)
+router.get("/balance/:groupId", GroupsController.getSettlements);
 router.get("/", GroupsController.getUserGroups);
 router.get("/:groupId", GroupsController.getGroup);
 router.post("/", GroupsController.createGroup);
 router.patch("/:groupId", GroupsController.updateGroup);
 router.delete("/:groupId", GroupsController.deleteGroup);
+
+// other
+router.get("/total/:groupId", GroupsController.getTotalGroupExpenses);
+router.get(
+  "/categoryTotal/:groupId",
+  GroupsController.getGroupCategoryExpenses
+);
+router.get("/userTotal/:groupId", GroupsController.getGroupUserExpenses);
+router.get("/monthTotal/:groupId", GroupsController.getGroupMonthlyExpenses);
 
 export default router;

@@ -41,7 +41,7 @@ const Dashboard = () => {
   };
 
   const GroupGrid = (
-    <div className="flow-root px-8 py-16 grid grid-cols-2 md:grid-cols-3 gap-6">
+    <div className="px-8 py-16 flex flex-wrap justify-center gap-6">
       {groups.map((group) => (
         <GroupCard key={group._id} group={group} username={loggedInUser ? loggedInUser.username : "" } />
       ))}
@@ -56,15 +56,15 @@ const Dashboard = () => {
         </h5>
         <Button label="New Group" onClick={addGroup} />
       </div>
-      {GroupsLoading && <p className="text-white"> Loading...</p>}
-      {error && <p className="text-white">Something went wrong :( </p>}
+      {GroupsLoading && <p className=""> Loading...</p>}
+      {error && <p className="">Something went wrong :( </p>}
       {!GroupsLoading && !error && (
         <>
           {" "}
           {groups.length > 0 ? (
             GroupGrid
           ) : (
-            <p className="text-black py-4">Looks empty in here :(</p>
+            <p className=" py-4">Looks empty in here :(</p>
           )}
         </>
       )}

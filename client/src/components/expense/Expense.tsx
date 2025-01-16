@@ -28,24 +28,25 @@ const Expense = ({
   }
 
   return (
-    <li className=" bg-base-300 p-5 w-full rounded-lg ">  
-      <span
-        className="flex items-center gap-4 justify-between"
+    <li className=" bg-base-200 hover:bg-base-300 py-4 w-full rounded-lg ">  
+      <div
+        className="flex items-center gap-4 justify-between px-6"
         onClick={() => OnExpenseClicked(expense)}
       >
-        <p className="text-2xl ">{categoryEmoji(expense.category)}</p>
+        <p className="text-2xl grow-0 px-2 ">{categoryEmoji(expense.category)}</p>
         <div className="grow flex flex-col items-start">
-          <p className="text-sm font-semibold">{expense.name}</p>
+          <p className="text-base font-semibold">{expense.name}</p>
           <p className="text-sm ">Paid by {expense.paidBy}</p>
+          <p className="test-xs justify-self-end font-light pt-1"> {expense.date}</p>
         </div>
-        <p className="font-semibold">{`${expense.amount} ${currency} `}</p>
+        <p className="text-lg font-semibold">{`${expense.amount} ${currency} `}</p>
 
         <button
           onClick={(e) => {
             OnDeleteClicked(expense);
             e.stopPropagation();
           }}
-          className="btn btn-ghost"
+          className="btn btn-circle btn-ghost"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -62,7 +63,7 @@ const Expense = ({
             />
           </svg>
         </button>
-      </span>
+      </div>
     </li>
   );
 };

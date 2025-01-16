@@ -2,7 +2,6 @@ import { RequestHandler } from "express";
 import { assertDefined } from "../util/assertDefined";
 import GroupModel from "../models/group";
 import ExpenseModel from "../models/expense";
-import SettlementModel from "../models/transfer";
 import mongoose from "mongoose";
 import createHttpError from "http-errors";
 import simplifyTransactions from "../util/balance";
@@ -221,8 +220,6 @@ export const deleteGroup: RequestHandler = async (req, res, next) => {
 
     // delete group expenses and settlements
     await ExpenseModel.deleteMany({ groupId: groupId });
-    await SettlementModel.deleteMany({ groupId: groupId });
-
     await GroupModel.deleteOne({ _id: groupId });
 
     res.sendStatus(204);
@@ -231,75 +228,117 @@ export const deleteGroup: RequestHandler = async (req, res, next) => {
   }
 };
 
-// export const getUserSpent: RequestHandler = async (req, res, next) => {
-//   const userId = req.session.userId;
-//   try {
-//     assertDefined(userId);
-//     const groups = await GroupModel.find({ owner: userId }).exec();
-//     res.status(200).json(groups);
-//   } catch (error) {
-//     next(error);
-//   }
-// };
+interface GroupTotal {
+  _id: string;
+  count: number;
+}
+export const getTotalGroupExpenses: RequestHandler = async (req, res, next) => {
+  const groupId = req.params.groupId;
+  const group = await GroupModel.findById(groupId).exec();
+  try {
+    const total = await ExpenseModel.aggregate<GroupTotal>([
+      {
+        $match: {
+          groupId: group?._id,
+          category: { $not: { $eq: "Transfer" } },
+        },
+      },
+      {
+        $group: {
+          _id: "$groupId",
+          count: { $sum: "$amount" },
+        },
+      },
+    ]).exec();
+    res.status(200).json(total[0].count);
+  } catch (error) {
+    next(error);
+  }
+};
 
-/*
-TODO:
-ALLOW EDITING MEMBERS
+export const getGroupCategoryExpenses: RequestHandler = async (
+  req,
+  res,
+  next
+) => {
+  const groupId = req.params.groupId;
+  try {
+    const group = await GroupModel.findById(groupId).exec();
+    const total = await ExpenseModel.aggregate<GroupTotal>([
+      {
+        $match: {
+          groupId: group?._id,
+          category: { $not: { $eq: "Transfer" } },
+        },
+      },
+      {
+        $group: {
+          _id: "$category",
+          count: { $sum: "$amount" },
+        },
+      },
+    ]).exec();
+    const result = total.map(cat => [cat._id, cat.count])
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
 
-*/
+export const getGroupUserExpenses: RequestHandler = async (
+  req,
+  res,
+  next
+) => {
+  const groupId = req.params.groupId;
+  try {
+    const group = await GroupModel.findById(groupId).exec();
+    const total = await ExpenseModel.aggregate<GroupTotal>([
+      {
+        $match: {
+          groupId: group?._id,
+          category: { $not: { $eq: "Transfer" } },
+        },
+      },
+      {
+        $group: {
+          _id: "$paidBy",
+          count: { $sum: "$amount" },
+        },
+      },
+    ]).exec();
+    const result = total.map(cat => [cat._id, cat.count])
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
 
-// interface addMemberParams {
-//   groupId: string;
-// }
-
-// interface addMemberBody {
-//   name?: string;
-//   emoji?: string;
-//   bio?: string;
-// }
-
-// /*
-// Add new member to a group
-// */
-// export const addMember: RequestHandler<
-//   addMemberParams,
-//   unknown,
-//   addMemberBody,
-//   unknown
-// > = async (req, res, next) => {
-//   const groupId = req.params.groupId;
-//   const userId = req.session.userId;
-//   const name = req.body.name;
-//   const emoji = req.body.emoji;
-//   const bio = req.body.bio;
-
-//   try {
-//     assertDefined(userId);
-//     // do better validation
-//     if (!name) throw createHttpError(400, "Group members need a name");
-
-//     const group = await GroupModel.findById(groupId).exec();
-
-//     if (!group) {
-//       throw createHttpError(404, "Group not found");
-//     }
-
-//     const member = {
-//       name: name,
-//       emoji: emoji,
-//       bio: bio,
-//     };
-//     group.members.push(member);
-//     const updatedGroup = await group.save();
-
-//     res.status(200).json(updatedGroup);
-//   } catch (error) {
-//     next(error);
-//   }
-// };
-
-/*
-Remove a member with balance 0 from a group
-*/
-// export const deleteMember: RequestHandler = async (req, res, next) => {};
-// export const claimMember: RequestHandler = async (req, res, next) => {};
+export const getGroupMonthlyExpenses: RequestHandler = async (
+  req,
+  res,
+  next
+) => {
+  const groupId = req.params.groupId;
+  try {
+    const group = await GroupModel.findById(groupId).exec();
+    const total = await ExpenseModel.aggregate<GroupTotal>([
+      {
+        $match: {
+          groupId: group?._id,
+          category: { $not: { $eq: "Transfer" } },
+        },
+      },
+      {
+        $group: {
+          _id: "$date",
+          count: { $sum: "$amount" },
+        },
+      },
+    ]).exec();
+    const result = total.map(cat => [cat._id, cat.count])
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};

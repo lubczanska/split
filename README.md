@@ -1,3 +1,3 @@
-### Split - web application for splitting your expenses
+# Split - web application for splitting your expenses
 
-written using MERN stack
+Build with the MERN stack, Typescript and Tailwind CSS
