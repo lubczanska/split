@@ -6,5 +6,5 @@ export interface Expense {
   category: string;
   paidBy: string;
   members: string[];
-  costSplit: Map<string, number>;
+  costSplit: Record<string, number>;
 }

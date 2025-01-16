@@ -24,7 +24,6 @@ const Group = () => {
   const [settlements, setSettlements] = useState<
     [string, string, number][] | null
   >(null);
-  const [reload, setReload] = useState(false);
   const [showExpense, setShowExpense] = useState<ExpenseModel | null>(null);
   const expenseRef = useRef<HTMLDialogElement | null>(null);
 
@@ -49,16 +48,14 @@ const Group = () => {
           navigate(configData.DASHBOARD_URL);
         }
       } catch (error) {
-        setError(true);
-        console.error(error);
-        alert(error);
+        if (error instanceof Error) setErrorText(error.message);
+        else alert(error);
       } finally {
         setExpensesLoading(false);
-        setReload(false);
       }
     }
     getGroup();
-  }, [navigate, params.groupId, reload]);
+  }, [navigate, params.groupId]);
 
   async function deleteExpense(expense: ExpenseModel) {
     try {
@@ -69,8 +66,8 @@ const Group = () => {
         setGroup(newGroup);
       }
     } catch (error) {
-      console.error(error);
-      alert(error);
+      if (error instanceof Error) setErrorText(error.message);
+      else alert(error);
     }
   }
 
@@ -79,8 +76,8 @@ const Group = () => {
       await Api.deleteGroup(groupId);
       navigate(configData.DASHBOARD_URL);
     } catch (error) {
-      console.error(error);
-      alert(error);
+      if (error instanceof Error) setErrorText(error.message);
+      else alert(error);
     }
   }
 
@@ -169,20 +166,15 @@ const Group = () => {
       </ul>
     </div>
   );
-  return (
+  return expensesLoading ? (
+    <div className="mx-auto py-20">
+      <span className="loading loading-dots loading-lg"></span>
+    </div>
+  ) : (
     <div>
       {errorText && <ErrorAlert text={errorText} />}
-
       <div className="">
         {/* Modals */}
-        {/* <ViewExpense
-          onClose={() => {
-            setShowExpense(null);
-            if (expenseRef.current) expenseRef.current.close();
-          }}
-          ref={expenseRef}
-          expense={showExpense}
-        /> */}
         <dialog id="show_expense_modal" className="modal" ref={expenseRef}>
           <div className="modal-box">
             <form method="dialog">
@@ -254,11 +246,14 @@ const Group = () => {
           </div>
           {/* Expenses end */}
           <div className="card bg-base-100 grow basis-1/4">
-          {/* Debt stat */}
-            <DebtStat debt={loggedInUser ? group?.memberBalance[loggedInUser.username] : 0}
-            currency={group?.currency}
-            onClick={getSettlements}
-            showButton={!settlements}
+            {/* Debt stat */}
+            <DebtStat
+              debt={
+                loggedInUser ? group?.memberBalance[loggedInUser.username] : 0
+              }
+              currency={group?.currency}
+              onClick={getSettlements}
+              showButton={!settlements}
             />
             {settlements ? (
               <div>

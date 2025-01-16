@@ -23,6 +23,17 @@ const AddEditTransfer = () => {
   const [groupMembers, setGroupMembers] = useState<string[]>([]);
   const [errorText, setErrorText] = useState<string | null>(null);
 
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors, isSubmitting },
+  } = useForm<TransferInput>({
+    defaultValues: {
+      date: new Date().toISOString().split("T")[0],
+    },
+  });
+  
   useEffect(() => {
     async function getGroup() {
       const groupId = params.groupId?.replace(":groupId", "");
@@ -30,20 +41,15 @@ const AddEditTransfer = () => {
         const group = await Api.fetchGroup(groupId);
         setGroup(group);
         setGroupMembers(group.members.map((m) => m.name));
+        setValue("from", groupMembers[0])
+        setValue("to", groupMembers[1])
       }
+  
     }
     getGroup();
-  }, [params.groupId, navigate]);
+  }, [params.groupId, navigate, setValue, groupMembers]);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<TransferInput>({
-    defaultValues: {
-      date: new Date().toISOString().split("T")[0],
-    },
-  });
+
 
   async function onSubmit(input: TransferInput) {
     try {

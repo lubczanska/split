@@ -25,9 +25,9 @@ const SelectField = ({
   ...props
 }: SelectFieldProps) => {
   return (
-    <div className="form-control">
+    <div className="form-control basis-1/2 grow">
       <label className="label">{label}</label>
-      <div className="indicator">
+      <div className="indicator w-full">
         {error && (
           <span role="alert" className="indicator-item badge badge-error">
             {" "}
@@ -37,7 +37,7 @@ const SelectField = ({
         <select
           id={name + "-select"}
           // value={defaultVal}
-          className="select select-bordered"
+          className="select select-bordered w-full"
           {...props}
           {...register(name, registerOptions)}
         >

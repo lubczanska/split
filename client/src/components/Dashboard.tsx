@@ -6,18 +6,18 @@ import Button from "./Button";
 import { useNavigate } from "react-router-dom";
 import configData from "../config.json";
 import { User as UserModel } from "../models/user";
+import ErrorAlert from "./ErrorAlert";
 
 const Dashboard = () => {
   const [loggedInUser, setLoggedInUser] = useState<UserModel | null>(null);
   const [groups, setGroups] = useState<GroupModel[]>([]);
   const [GroupsLoading, setGroupsLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const [errorText, setErrorText] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     async function loadGroups() {
       try {
-        setError(false);
         setGroupsLoading(true);
         const user = await Api.getLoggedInUser();
         if (user) {
@@ -26,9 +26,8 @@ const Dashboard = () => {
         const Groups = await Api.fetchGroups();
         setGroups(Groups);
       } catch (error) {
-        setError(true);
-        console.error(error);
-        alert(error);
+        if (error instanceof Error) setErrorText(error.message);
+        else alert(error);
       } finally {
         setGroupsLoading(false);
       }
@@ -41,24 +40,29 @@ const Dashboard = () => {
   };
 
   const GroupGrid = (
-    <div className="px-8 py-16 flex flex-wrap justify-center gap-6">
+    <div className="px-8 py-16 flex flex-wrap gap-6">
       {groups.map((group) => (
-        <GroupCard key={group._id} group={group} username={loggedInUser ? loggedInUser.username : "" } />
+        <GroupCard
+          key={group._id}
+          group={group}
+          username={loggedInUser ? loggedInUser.username : ""}
+        />
       ))}
     </div>
   );
 
-  return (
+  return GroupsLoading ? (
+    <div className="mx-auto py-20">
+      <span className="loading loading-dots loading-lg"></span>
+    </div>
+  ) : (
     <div className="">
+            {errorText && <ErrorAlert text={errorText} />}
       <div className="flex items-center gap-8 justify-between my-4">
-        <h5 className="text-2xl font-bold leading-none ">
-          Your Groups
-        </h5>
+        <h5 className="text-2xl font-bold leading-none ">Your Groups</h5>
         <Button label="New Group" onClick={addGroup} />
       </div>
-      {GroupsLoading && <p className=""> Loading...</p>}
-      {error && <p className="">Something went wrong :( </p>}
-      {!GroupsLoading && !error && (
+      {!errorText && (
         <>
           {" "}
           {groups.length > 0 ? (

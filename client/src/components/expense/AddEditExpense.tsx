@@ -8,6 +8,7 @@ import * as Api from "../../network/api";
 import configData from "../../config.json";
 import { ExpenseInput } from "../../network/api";
 import ErrorAlert from "../ErrorAlert";
+import { CATEGORIES } from "../../util/helper";
 
 const AddExpense = () => {
   const navigate = useNavigate();
@@ -17,6 +18,16 @@ const AddExpense = () => {
   const [participants, setParticipants] = useState<boolean[]>([]);
   const [equal, setEqual] = useState(true);
   const [errorText, setErrorText] = useState<string | null>(null);
+
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    setValue,
+    formState: { errors, isSubmitting },
+  } = useForm<ExpenseInput>({
+    defaultValues: { date: new Date().toISOString().split("T")[0] },
+  });
 
   useEffect(() => {
     async function getGroup() {
@@ -29,34 +40,31 @@ const AddExpense = () => {
           true
         );
         setParticipants(newParticipants);
+        setValue("paidBy", groupMembers[0])
       }
     }
     getGroup();
-  }, [params.groupId, navigate]);
+  }, [params.groupId, navigate, setValue, groupMembers[0]]);
+
   const changeParticipant = (position: number) => {
     const nextParticipants = participants.map((item, index) =>
       position === index ? !item : item
     );
-
     setParticipants(nextParticipants);
+    if (equal) splitEqually(nextParticipants.filter(Boolean).length, position);
   };
 
-  const {
-    register,
-    handleSubmit,
-    getValues,
-    setValue,
-    formState: { errors, isSubmitting },
-  } = useForm<ExpenseInput>({
-    defaultValues: { date: new Date().toISOString().split("T")[0] },
-  });
 
-  const splitEqually = () => {
-    const count = participants.filter(Boolean).length;
+
+  /*
+  set participant amounts to an equal share 
+  */
+  const splitEqually = (cnt?: number, pos?: number) => {
+    const count = cnt ? cnt : participants.filter(Boolean).length;
     const res =
       Math.round((getValues("amount") / count + Number.EPSILON) * 100) / 100;
     participants.forEach((selected, index) => {
-      if (selected) setValue(`costSplit.${groupMembers[index]}`, res);
+      if (selected || index==pos) setValue(`costSplit.${groupMembers[index]}`, res);
     });
   };
 
@@ -117,13 +125,7 @@ const AddExpense = () => {
             name="category"
             label="Category"
             selected={{ value: "Others", label: "💵  Other" }}
-            options={[
-              { value: "Others", label: "💵  Other" },
-              { value: "Transport", label: "🚗  Transport" },
-              { value: "Food", label: "🍕  Food" },
-              { value: "Shopping", label: "🛍️ Shopping" },
-              { value: "Entertainment", label: "🛍️ Entertainment" },
-            ]}
+            options={CATEGORIES}
             defaultVal={groupMembers[0]}
             register={register}
             registerOptions={{ required: "Required" }}
@@ -243,10 +245,10 @@ const AddExpense = () => {
           <button
             type="submit"
             form="addExpenseForm"
-            className="btn btn-primary my-2"
+            className="btn btn-primary my-2 w-full"
             disabled={isSubmitting}
           >
-            Submit
+            Add Expense
           </button>
         </div>
       </form>

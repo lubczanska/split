@@ -1,4 +1,5 @@
 import { Expense as ExpenseModel } from "../../models/expense";
+import { categoryEmoji } from "../../util/helper";
 
 interface ExpenseProps {
   expense: ExpenseModel;
@@ -13,34 +14,26 @@ const Expense = ({
   OnExpenseClicked,
   OnDeleteClicked,
 }: ExpenseProps) => {
-  function categoryEmoji(category: string) {
-    const emojis: Record<string, string> = {
-      Others: "💵",
-      Transfer: "💸",
-      Transport: "🚗",
-      Food: "🍕",
-      Shopping: "🛍️",
-      Entertainment: "🛍️",
-      Home: "🛍️",
-      Accomodation: "🛏️",
-    };
-    return emojis[category];
-  }
+
 
   return (
-    <li className=" bg-base-200 hover:bg-base-300 py-4 w-full rounded-lg ">  
+    <li className=" bg-base-200 hover:bg-base-300 py-4 w-full rounded-lg ">
       <div
         className="flex items-center gap-4 justify-between px-6"
         onClick={() => OnExpenseClicked(expense)}
       >
-        <p className="text-2xl grow-0 px-2 ">{categoryEmoji(expense.category)}</p>
+        <p className="text-2xl grow-0 px-2 ">
+          {categoryEmoji(expense.category)}
+        </p>
         <div className="grow flex flex-col items-start">
           <p className="text-base font-semibold">{expense.name}</p>
           <p className="text-sm ">Paid by {expense.paidBy}</p>
-          <p className="test-xs justify-self-end font-light pt-1"> {expense.date}</p>
+          <p className="test-xs justify-self-end font-light pt-1">
+            {" "}
+            {expense.date}
+          </p>
         </div>
         <p className="text-lg font-semibold">{`${expense.amount} ${currency} `}</p>
-
         <button
           onClick={(e) => {
             OnDeleteClicked(expense);

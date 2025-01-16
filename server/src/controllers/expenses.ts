@@ -3,6 +3,7 @@ import ExpenseModel from "../models/expense";
 import GroupModel from "../models/group";
 import createHttpError from "http-errors";
 import mongoose from "mongoose";
+import { round2 } from "../util/round2";
 
 /*
 view Group Transfers and Expenses
@@ -65,19 +66,14 @@ const updateBalances = async (
   members.forEach((member) => {
     group.memberBalance.set(
       member,
-      Math.round(
-        (Number(group.memberBalance.get(member)) -
-          Number(split.get(member)) +
-          Number.EPSILON) *
-          100
-      ) / 100
+      round2(
+        Number(group.memberBalance.get(member)) - Number(split.get(member))
+      )
     );
   });
   group.memberBalance.set(
     paidBy,
-    Math.round(
-      (Number(group.memberBalance.get(paidBy)) + amount + Number.EPSILON) * 100
-    ) / 100
+    round2(Number(group.memberBalance.get(paidBy)) + amount)
   );
   group.save();
 };
@@ -98,12 +94,12 @@ const clearBalances = async (
   members.forEach((member) => {
     group.memberBalance.set(
       member,
-      Number(group.memberBalance.get(member)) + Number(split.get(member))
+      round2(Number(group.memberBalance.get(member)) + Number(split.get(member)))
     );
   });
   group.memberBalance.set(
     paidBy,
-    Number(group.memberBalance.get(paidBy)) - amount
+    round2(Number(group.memberBalance.get(paidBy)) - amount)
   );
 
   group.save();
@@ -300,6 +296,7 @@ export const deleteExpense: RequestHandler = async (req, res, next) => {
 //   } catch (error) {
 //     next(error);
 //   }
+// };
 // };
 
 // interface updateTransferParams {

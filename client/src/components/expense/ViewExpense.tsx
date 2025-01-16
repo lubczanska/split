@@ -1,4 +1,5 @@
 import { Expense as ExpenseModel } from "../../models/expense";
+import { categoryEmoji } from "../../util/helper";
 
 interface ViewExpenseProps {
   expense: ExpenseModel | null;
@@ -8,7 +9,7 @@ interface ViewExpenseProps {
 const ViewExpense = ({ expense, currency }: ViewExpenseProps) => {
   return expense ? (
     <div className="flex flex-col gap-2">
-      <p className="text-xl">{expense.category}</p>
+      <p className="text-xl">{categoryEmoji(expense.category)}</p>
       <h3 className="font-bold text-xl text-primary">{expense.name}</h3>
       <p className="">{expense.date}</p>
       <div className="flex flex-col items-start">

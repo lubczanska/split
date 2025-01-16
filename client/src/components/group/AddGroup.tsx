@@ -7,6 +7,7 @@ import { useLocation, useNavigate } from "react-router";
 import configData from "../../config.json";
 import { useState } from "react";
 import ErrorAlert from "../ErrorAlert";
+import { CURRENCIES, EMOJI } from "../../util/helper";
 
 const AddGroup = () => {
   const [errorText, setErrorText] = useState<string | null>(null);
@@ -63,12 +64,7 @@ const AddGroup = () => {
           <SelectField
             name="emoji"
             label="Emoji"
-            options={[
-              { value: "🙂", label: "🙂" },
-              { value: "💵", label: "💵" },
-              { value: "💩", label: "💩" },
-              { value: "💀", label: "💀" },
-            ]}
+            options={EMOJI}
             defaultVal="🙂"
             register={register}
             registerOptions={{ required: "Required" }}
@@ -78,13 +74,7 @@ const AddGroup = () => {
         <SelectField
           name="currency"
           label="Currency"
-          options={[
-            { value: "PLN", label: "Polish Zloty" },
-            { value: "EUR", label: "Euro" },
-            { value: "USD", label: "US Dollar" },
-            { value: "GBP", label: "British Pound" },
-            { value: "CZK", label: "Czech Koruna" },
-          ]}
+          options={CURRENCIES}
           defaultVal="PLN"
           register={register}
           registerOptions={{ required: "Required" }}

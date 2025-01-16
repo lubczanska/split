@@ -20,9 +20,9 @@ const TextInputField = ({
   ...props
 }: TextInputFieldProps) => {
   return (
-    <div className="form-control">
+    <div className="form-control basis-1/2 grow">
       <label className="label">{label}</label>
-      <div className="indicator">
+      <div className="indicator w-full">
       {error && (
         <span role="alert" className="indicator-item badge badge-error">
           {" "}
@@ -32,7 +32,7 @@ const TextInputField = ({
       <input
         id={name + "-input"}
         type="text"
-        className="input input-bordered"
+        className="input input-bordered w-full"
         {...props}
         {...register(name, registerOptions)}
         aria-invalid={error ? "true" : "false"}
