@@ -278,18 +278,14 @@ export const getGroupCategoryExpenses: RequestHandler = async (
         },
       },
     ]).exec();
-    const result = total.map(cat => [cat._id, cat.count])
+    const result = total.map((cat) => [cat._id, cat.count]);
     res.status(200).json(result);
   } catch (error) {
     next(error);
   }
 };
 
-export const getGroupUserExpenses: RequestHandler = async (
-  req,
-  res,
-  next
-) => {
+export const getGroupUserPaid: RequestHandler = async (req, res, next) => {
   const groupId = req.params.groupId;
   try {
     const group = await GroupModel.findById(groupId).exec();
@@ -307,7 +303,7 @@ export const getGroupUserExpenses: RequestHandler = async (
         },
       },
     ]).exec();
-    const result = total.map(cat => [cat._id, cat.count])
+    const result = total.map((cat) => [cat._id, cat.count]);
     res.status(200).json(result);
   } catch (error) {
     next(error);
@@ -336,7 +332,7 @@ export const getGroupMonthlyExpenses: RequestHandler = async (
         },
       },
     ]).exec();
-    const result = total.map(cat => [cat._id, cat.count])
+    const result = total.map((cat) => [cat._id, cat.count]);
     res.status(200).json(result);
   } catch (error) {
     next(error);

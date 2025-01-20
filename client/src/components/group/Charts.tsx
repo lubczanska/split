@@ -12,6 +12,7 @@ const Charts = ({ group, currency }: ChartsProps) => {
   const [total, setTotal] = useState(0);
   const [categoryTotal, setCategoryTotal] = useState<[string, number][]>([]);
   const [userTotal, setUserTotal] = useState<[string, number][]>([]);
+  const [userSpent, setUserSpent] = useState<[string, number][]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
@@ -24,11 +25,19 @@ const Charts = ({ group, currency }: ChartsProps) => {
           const groupId = group._id;
           setError(false);
           const total = await Api.fetchGroupTotal(groupId);
-          const categoryTotal = await Api.fetchGroupCategoryTotal(groupId);
-          const UserTotal = await Api.fetchGroupUserTotal(groupId);
+          const categoryTotal = await Api.getGroupCategoryTotal(groupId);
+          const UserTotal = await Api.getGroupUserTotal(groupId);
+          const Totals = new Map(UserTotal);
+          const UserSpent : [string, number][] = Object.entries(group.memberBalance).map(
+            ([key, value]) => {
+              const total = Totals.get(key) || 0;
+              return [key, total - value];
+            }
+          )
           setTotal(total);
           setCategoryTotal(categoryTotal);
           setUserTotal(UserTotal);
+          setUserSpent(UserSpent)
         }
       } catch (error) {
         setError(true);
@@ -57,11 +66,21 @@ const Charts = ({ group, currency }: ChartsProps) => {
             </p>
           </div>
           <div className="basis-1/4">
-            <h5 className="py-4 font-bold text-lg">Total amount paid by User</h5>
-            <UserChart totals={userTotal} currency={currency}/>
+            <h5 className="py-4 font-bold text-lg">
+              Total amount paid by User
+            </h5>
+            <UserChart totals={userTotal} currency={currency} />
           </div>
           <div className="basis-1/4">
-            <h5 className="py-4 font-bold text-lg">Total amount spent by Category</h5>
+            <h5 className="py-4 font-bold text-lg">
+              Total amount spent by User
+            </h5>
+            <UserChart totals={userSpent} currency={currency} />
+          </div>
+          <div className="basis-1/4">
+            <h5 className="py-4 font-bold text-lg">
+              Total amount spent by Category
+            </h5>
             <UserChart totals={categoryTotal} currency={currency} />
           </div>
         </div>

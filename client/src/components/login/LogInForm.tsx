@@ -3,16 +3,16 @@ import { LogInCredentials } from "../../network/api";
 import * as UsersApi from "../../network/api";
 import { User as UserModel } from "../../models/user";
 import TextInputField from "../form/TextInputField";
-import Button from "../Button";
-import { useState } from "react";
+import { useState,  ReactElement } from "react";
 import ErrorAlert from "../ErrorAlert";
 import { useNavigate } from "react-router";
 
 interface LogInProps {
   onLogInSuccessful: (user: UserModel) => void;
+  otherButton: ReactElement;
 }
 
-const LogInForm = ({ onLogInSuccessful }: LogInProps) => {
+const LogInForm = ({ onLogInSuccessful, otherButton }: LogInProps) => {
     const [errorText, setErrorText] = useState<string | null>(null);
     const navigate = useNavigate();
     const {
@@ -72,8 +72,9 @@ const LogInForm = ({ onLogInSuccessful }: LogInProps) => {
         registerOptions={{ required: "Required" }}
         error={errors.password}
       />
-        <div className="flex items-center mb-5">
-          <Button type="submit" label="Log In" disabled={isSubmitting} />
+        <div className="card-actions py-4">
+          <button type="submit" className="btn w-full btn-primary" disabled={isSubmitting}>Log In </button>
+          {otherButton}
         </div>
     </form>
     </div>

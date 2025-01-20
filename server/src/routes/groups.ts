@@ -15,7 +15,7 @@ router.get(
   "/categoryTotal/:groupId",
   GroupsController.getGroupCategoryExpenses
 );
-router.get("/userTotal/:groupId", GroupsController.getGroupUserExpenses);
+router.get("/userTotal/:groupId", GroupsController.getGroupUserPaid);
 router.get("/monthTotal/:groupId", GroupsController.getGroupMonthlyExpenses);
 
 export default router;

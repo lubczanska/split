@@ -261,7 +261,7 @@ export async function fetchGroupTotal(groupId: string): Promise<number> {
   return response.json();
 }
 
-export async function fetchGroupCategoryTotal(groupId: string): Promise<[string, number][]> {
+export async function getGroupCategoryTotal(groupId: string): Promise<[string, number][]> {
   const response = await fetchData(
     "http://localhost:5000/api/groups/categoryTotal/" + groupId,
     {
@@ -271,7 +271,7 @@ export async function fetchGroupCategoryTotal(groupId: string): Promise<[string,
   );
   return response.json();
 }
-export async function fetchGroupUserTotal(groupId: string): Promise<[string, number][]> {
+export async function getGroupUserTotal(groupId: string): Promise<[string, number][]> {
   const response = await fetchData(
     "http://localhost:5000/api/groups/userTotal/" + groupId,
     {

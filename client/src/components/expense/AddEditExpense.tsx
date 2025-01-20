@@ -119,7 +119,7 @@ const AddExpense = () => {
           </button>
         </div>
 
-        <div className="flex flex-wrap lg:gap-20">
+        <div className="flex flex-wrap">
           <TextInputField
             name="name"
             label="Name"
@@ -139,7 +139,7 @@ const AddExpense = () => {
           />
         </div>
 
-        <div className="flex flex-wrap lg:gap-20">
+        <div className="flex flex-wrap">
           <TextInputField
             name="amount"
             label="Amount"

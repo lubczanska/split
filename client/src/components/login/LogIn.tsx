@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Button from "../Button";
 import LogInForm from "./LogInForm";
 import SignUpForm from "./SignUpForm";
 import * as Api from "../../network/api";
@@ -29,16 +28,15 @@ const LogIn = ({ onLoginSuccessful }: LogInProps) => {
           navigate("/dashboard");
         }
       } catch (error) {
-        setErrorText("Oops, something went wrong!");
-        console.error(error);
+        if (error instanceof Error) setErrorText(error.message);
+        else alert(error);
         alert(error);
       }
     }
     loadUser();
     setErrorText(null);
-    
-    
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -50,25 +48,33 @@ const LogIn = ({ onLoginSuccessful }: LogInProps) => {
             onLogInSuccessful={(user) => {
               onLoginSuccessful(user);
             }}
-          />
-          <Button
-            type="button"
-            label="Not a user yet? Sign Up!"
-            onClick={() => setShowRegister(true)}
+            otherButton={
+              <button
+                type="button"
+                className="btn btn-primary btn-outline w-full"
+                onClick={() => setShowRegister(true)}
+              >
+                Not a user yet? Sign Up!
+              </button>
+            }
           />
         </div>
       )}
       {showRegister && (
-        <div className="flex flex-col items-center justify-center  mb-5">
+        <div className="flex flex-col items-center justify-center mb-5">
           <SignUpForm
             onSignUpSuccessful={(user) => {
               onLoginSuccessful(user);
             }}
-          />
-          <Button
-            type="button"
-            label="I already have an account"
-            onClick={() => setShowRegister(false)}
+            otherButton={
+              <button
+                type="button"
+                className="btn btn-primary btn-outline w-full"
+                onClick={() => setShowRegister(false)}
+              >
+                I already have an account
+              </button>
+            }
           />
         </div>
       )}
