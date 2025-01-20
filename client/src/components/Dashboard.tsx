@@ -22,6 +22,8 @@ const Dashboard = () => {
         const user = await Api.getLoggedInUser();
         if (user) {
           setLoggedInUser(user);
+        } else {
+          navigate(configData.LANDING_URL)
         }
         const Groups = await Api.fetchGroups();
         setGroups(Groups);

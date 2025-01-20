@@ -20,7 +20,7 @@ const TextInputField = ({
   ...props
 }: TextInputFieldProps) => {
   return (
-    <div className="form-control basis-1/2 grow">
+    <div className="form-control md:basis-1/2 grow px-1">
       <label className="label">{label}</label>
       <div className="indicator w-full">
       {error && (

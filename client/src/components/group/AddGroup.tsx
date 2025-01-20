@@ -44,7 +44,7 @@ const AddGroup = () => {
   };
 
   return (
-    <div className="card w-2/3 mx-auto card-bordered bg-base-200">
+    <div className="card md:w-2/3 mx-auto card-bordered bg-base-200 card-compact md:card-normal">
       {errorText && <ErrorAlert text={errorText} />}
 
       <form
@@ -52,8 +52,26 @@ const AddGroup = () => {
         id="addGroupForm"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <h5 className="card-title">Add Group</h5>
-        <div className="flex gap-20">
+        <div className="flex justify-between">
+          <h5 className="card-title">Add Group</h5>
+          <button className="btn btn-circle" onClick={() => navigate(-1)}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+        <div className="flex flex-wrap ">
           <TextInputField
             name="name"
             label="Name"
@@ -87,14 +105,14 @@ const AddGroup = () => {
             placeholder="name"
             readOnly
             value={location.state.user.username}
-            className={"join-item input input-bordered  px-8"}
+            className={"join-item input input-bordered"}
           />
           {fields.map((field, index) => {
             return (
               <div key={field.id} className="join-item input input-bordered ">
                 <div className="flex items-center justify-between">
                   <input
-                    className={"input input-ghosted "}
+                    className={"input input-ghosted px-0 "}
                     placeholder="name"
                     {...register(`members.${index}.name` as const, {
                       required: true,

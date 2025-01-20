@@ -38,7 +38,7 @@ const GroupCard = ({ group, username }: GroupProps) => {
   };
 
   return (
-    <Link to={groupUrl} className="basis-1/4">
+    <Link to={groupUrl} className="lg:basis-1/4 grow lg:grow-0">
       <div className="card bg-base-100 h-full hover:bg-base-200">
         <div className="flex gap-4 items-start">
           <p className="font-normal text-2xl">{group.emoji}</p>

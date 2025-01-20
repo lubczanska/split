@@ -1,18 +1,17 @@
 import { Link } from "react-router-dom";
-import Button from "./Button";
 import configData from "../config.json";
 
 const Landing = () => {
   return (
-    <div className="flex flex-col">
-      <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl ">
+    <div className="card gap-4 my-10">
+      <h1 className="stat-value mb-10">
         Welcome to SPLIT
       </h1>
-      <Link to={configData.LOGIN_URL}>
-        <Button label="Log In or Register" />
+      <div className="lg:w-1/4 mx-auto card-actions">
+      <Link to={configData.LOGIN_URL} className="w-full btn btn-primary ">
+        Log In or Register
       </Link>
-      <div>
-        <Button label="Quick Split" />
+        <button className="btn btn-primary w-full"disabled >Quick Split</button>
       </div>
     </div>
   );

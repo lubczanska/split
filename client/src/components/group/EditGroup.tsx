@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { Group as GroupModel } from "../../models/group";
 import * as Api from "../../network/api";
 import ErrorAlert from "../ErrorAlert";
+import { EMOJI } from "../../util/helper";
 
 const EditGroup = () => {
   const [errorText, setErrorText] = useState<string | null>(null);
@@ -77,119 +78,123 @@ const EditGroup = () => {
     }
   };
 
-  return (
-    <div>
-      {loading && <p className="text-white"> Loading...</p>}
-      {!loading && (
-        <div>
-          {errorText && <ErrorAlert text={errorText} />}
-          <form
-            className="max-w-sm mx-auto border border-black rounded-xl p-8"
-            id="editGroupForm"
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <h5 className="text-2xl font-bold pb-6">Edit Group</h5>
-            <div className="flex gap-4 justify-around">
-              <TextInputField
-                name="name"
-                label="Name"
-                register={register}
-                registerOptions={{ required: "Required" }}
-                error={errors.name}
-              />
-              <SelectField
-                name="emoji"
-                label="Emoji"
-                options={[
-                  { value: "🙂", label: "🙂" },
-                  { value: "💵", label: "💵" },
-                  { value: "💩", label: "💩" },
-                  { value: "💀", label: "💀" },
-                ]}
-                defaultVal="🙂"
-                register={register}
-                registerOptions={{ required: "Required" }}
-                error={errors.emoji}
-              />
-            </div>
-            <label className="block mb-2 text-sm font-medium pt-2">
-              Members
-            </label>
-            <div className="border border-black empty:border-0 rounded-lg bg-white">
-              {fields.map((field, index) => {
-                return (
-                  <div
-                    key={field.id}
-                    className=" border-b border-black last:border-0"
-                  >
-                    <section
-                      className={
-                        "section flex justify-between gap-3 text-black text-sm  block w-full py-2.5 px-4 d"
-                      }
-                      key={field.id}
-                    >
-                      <div>
-                        {group && index < group?.members.length ? (
-                          <input
-                            placeholder="name"
-                            {...register(`members.${index}.name` as const, {
-                              required: true,
-                            })}
-                            disabled
-                            className={
-                              "focus:ring-green-500 focus:border-green-500" +
-                              errors?.members?.[index]?.name
-                                ? "error"
-                                : ""
-                            }
-                          />
-                        ) : (
-                          <div>
-                            <input
-                              placeholder="name"
-                              {...register(`members.${index}.name` as const, {
-                                required: true,
-                              })}
-                              className={
-                                "focus:ring-green-500 focus:border-green-500" +
-                                errors?.members?.[index]?.name
-                                  ? "error"
-                                  : ""
-                              }
-                            />
-                            <button
-                              type="button"
-                              onClick={() => {
-                                remove(index);
-                              }}
-                            >
-                              x
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    </section>
-                  </div>
-                );
-              })}
-            </div>
-            <Button
-              type="button"
-              label="Add member"
-              onClick={() => append({ name: "" })}
-            />
-
-            <button
-              type="submit"
-              form="editGroupForm"
-              className="text-black bg-green-300 border border-black hover:bg-green-400 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-full text-sm px-5  w-full py-2.5 text-center me-2 mb-2 mt-4"
-              disabled={isSubmitting}
+  return loading ? (
+    <div className="mx-auto py-20">
+      <span className="loading loading-dots loading-lg"></span>
+    </div>
+  ) : (
+    <div className="card md:w-2/3  mx-auto card-bordered bg-base-200 card-compact md:card-normal">
+      {errorText && <ErrorAlert text={errorText} />}
+      <form
+        className="card-body"
+        id="editGroupForm"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <div className="flex justify-between">
+          <h5 className="card-title">Edit Group</h5>
+          <button className="btn btn-circle" onClick={() => navigate(-1)}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
             >
-              Update Group
-            </button>
-          </form>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
         </div>
-      )}
+        <div className="flex flex-wrap">
+          <TextInputField
+            name="name"
+            label="Name"
+            register={register}
+            registerOptions={{ required: "Required" }}
+            error={errors.name}
+          />
+          <SelectField
+            name="emoji"
+            label="Emoji"
+            options={EMOJI}
+            defaultVal="🙂"
+            register={register}
+            registerOptions={{ required: "Required" }}
+            error={errors.emoji}
+          />
+        </div>
+        <label className="label">Members</label>
+        <div className="join join-vertical">
+          {fields.map((field, index) => {
+            return (
+              <div key={field.id} className="join-item input input-bordered ">
+                {group && index < group?.members.length ? (
+                  <div className="flex items-center justify-between w-full">
+                    <input
+                      className="input px-0"
+                      placeholder="name"
+                      {...register(`members.${index}.name` as const, {
+                        required: true,
+                      })}
+                      readOnly
+                    />
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between w-full">
+                    <input
+                      placeholder="name"
+                      {...register(`members.${index}.name` as const, {
+                        required: true,
+                      })}
+                      className="input px-0"
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-ghost btn-sm "
+                      onClick={() => {
+                        remove(index);
+                      }}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+        <Button
+          type="button"
+          label="Add member"
+          onClick={() => append({ name: "" })}
+        />
+
+        <button
+          type="submit"
+          form="editGroupForm"
+          className="btn btn-primary my-8"
+          disabled={isSubmitting}
+        >
+          Update Group
+        </button>
+      </form>
     </div>
   );
 };

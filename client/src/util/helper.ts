@@ -25,28 +25,36 @@ export const EMOJI = [
   { value: "🙃", label: "🙃" },
 ];
 
-export const CATEGORIES = [
-  { value: "Others", label: "💵 Other" },
-  { value: "Transport", label: "🚗 Transport" },
-  { value: "Food", label: "🍕 Food" },
-  { value: "Shopping", label: "🛍️ Shopping" },
-  { value: "Entertainment", label: "🛍️ Entertainment" },
-  { value: "Home", label: "🛍️ Home" },
-  { value: "Accomodation", label: "🛏️ Accomodation" },
-];
-
 export const CATEGORY_LABELS = {
   Others: "💵",
   Transfer: "💸",
   Transport: "🚗",
   Food: "🍕",
   Shopping: "🛍️",
-  Entertainment: "🛍️",
-  Home: "🛍️",
+  Entertainment: "🎲",
+  Home: "🏠",
   Accomodation: "🛏️",
 };
 
+export const CATEGORIES = [
+  { value: "Others", label: "💵 Other" },
+  { value: "Transport", label: "🚗 Transport" },
+  { value: "Food", label: "🍕 Food" },
+  { value: "Shopping", label: "🛍️ Shopping" },
+  { value: "Entertainment", label: "🎲 Entertainment" },
+  { value: "Home", label: "🏠 Home" },
+  { value: "Accomodation", label: "🛏️ Accomodation" },
+];
+
 export function categoryEmoji(category: string) {
-  const emojis: Record<string, string> = CATEGORY_LABELS
+  const emojis: Record<string, string> = CATEGORY_LABELS;
   return emojis[category];
 }
+
+const COLORS = ["#ff6384", "#36a2eb", "#ffcd56"];
+
+export const getColor = (index: number): string =>  {
+  if (index < COLORS.length) return COLORS[index];
+  else return "#ffffff";;
+}
+

@@ -12,6 +12,7 @@ import ErrorAlert from "../ErrorAlert";
 import ViewExpense from "../expense/ViewExpense";
 import Settlements from "./Settlements";
 import DebtStat from "./DebtStat";
+import Charts from "./Charts";
 
 const Group = () => {
   const params = useParams();
@@ -85,24 +86,6 @@ const Group = () => {
     if (group) {
       const res = await Api.fetchGroupSettlement(group._id);
       setSettlements(res);
-    }
-  }
-  async function getTotal() {
-    if (group) {
-      const res = await Api.fetchGroupTotal(group._id);
-      console.log(res);
-    }
-  }
-  async function getCategoryTotal() {
-    if (group) {
-      const res = await Api.fetchGroupCategoryTotal(group._id);
-      console.log(res);
-    }
-  }
-  async function getUserTotal() {
-    if (group) {
-      const res = await Api.fetchGroupUserTotal(group._id);
-      console.log(res);
     }
   }
 
@@ -192,12 +175,34 @@ const Group = () => {
           </div>
         </dialog>
         {/* Group header start */}
-        <div className="flex justify-between pt-2 pb-6">
-          <div className="flex gap-5 py-4">
-            <h2 className="text-xl font-bold ">{group?.emoji}</h2>
-            <h2 className="text-xl font-bold ">{group?.name}</h2>
+        <div className="flex justify-between pt-2 pb-6 flex-wrap">
+          <div className="flex gap-4 py-4 items-end">
+            <h2 className="stat-value">{group?.emoji}</h2>
+            <h2 className="stat-value">{group?.name}</h2>
           </div>
           <div className="card-actions">
+            <button
+              className="btn btn-circle btn-ghost"
+              onClick={() => navigate(-1)}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+            <Link to={configData.EDIT_GROUP_URL + group?._id}>
+              <button className="btn btn-outline btn-secondary">EDIT</button>
+            </Link>
             <button
               onClick={(e) => {
                 if (group) deleteGroup(group._id);
@@ -205,19 +210,14 @@ const Group = () => {
               }}
               className="btn btn-outline btn-secondary"
             >
-              DELETE GROUP
+              DELETE
             </button>
-            <Link to={configData.EDIT_GROUP_URL + group?._id}>
-              <button className="btn btn-outline btn-secondary">
-                EDIT GROUP
-              </button>
-            </Link>
           </div>
         </div>
         {/* Group header end */}
         <div className="flex flex-wrap justify-around gap-10">
           {/* Expenses */}
-          <div className="card card-compact bg-base-100 basis-2/3">
+          <div className="card card-compact bg-base-100 grow lg:basis-2/3">
             <div className="flex flex-col gap-4">
               <span className="card-title">Your expenses</span>
               <div className="card-actions gap-4">
@@ -229,16 +229,20 @@ const Group = () => {
                 </Link>
               </div>
             </div>
-            <div className="card-body">
-              {expensesLoading && <p className="text-white"> Loading...</p>}
-              {error && <p className="text-white">Something went wrong :( </p>}
+            <div className="py-4">
+              {expensesLoading && (
+                <div className="mx-auto py-20">
+                  <span className="loading loading-dots loading-lg"></span>
+                </div>
+              )}
+              {error && <p>Something went wrong :( </p>}
               {!expensesLoading && !error && (
                 <>
                   {" "}
                   {expenses.length > 0 ? (
                     expenseGrid
                   ) : (
-                    <p className="text-white">Looks empty in here</p>
+                    <p>Looks empty in here</p>
                   )}
                 </>
               )}
@@ -277,20 +281,7 @@ const Group = () => {
             )}
           </div>
           <div className="card bg-base-100 grow">
-            <div className="card-actions gap-4 justify-center">
-              <button className="btn btn-secondary grow" onClick={getTotal}>
-                Total
-              </button>
-              <button
-                className="btn btn-secondary grow"
-                onClick={getCategoryTotal}
-              >
-                Category Total
-              </button>
-              <button className="btn btn-secondary grow" onClick={getUserTotal}>
-                User Total
-              </button>
-            </div>
+            <Charts group={group} currency={group?.currency} />
           </div>
         </div>
       </div>

@@ -19,7 +19,7 @@ const Expense = ({
   return (
     <li className=" bg-base-200 hover:bg-base-300 py-4 w-full rounded-lg ">
       <div
-        className="flex items-center gap-4 justify-between px-6"
+        className="flex items-center gap-4 justify-between px-3 md:px-6"
         onClick={() => OnExpenseClicked(expense)}
       >
         <p className="text-2xl grow-0 px-2 ">

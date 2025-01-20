@@ -22,7 +22,7 @@ const DebtStat = ({ debt, currency, onClick, showButton }: DebtProps) => {
   return (
     <div className={"stats text-primary-content mb-4 " + bg}>
       <div className="stat">
-        <p className="stat-title text-black">{smallText}</p>
+        <p className="stat-title text-primary-content">{smallText}</p>
          <p className="stat-value">
           {debt ? Math.abs(debt) : 0} {currency}
         </p>

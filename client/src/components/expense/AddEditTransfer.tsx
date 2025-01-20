@@ -33,7 +33,7 @@ const AddEditTransfer = () => {
       date: new Date().toISOString().split("T")[0],
     },
   });
-  
+
   useEffect(() => {
     async function getGroup() {
       const groupId = params.groupId?.replace(":groupId", "");
@@ -41,15 +41,12 @@ const AddEditTransfer = () => {
         const group = await Api.fetchGroup(groupId);
         setGroup(group);
         setGroupMembers(group.members.map((m) => m.name));
-        setValue("from", groupMembers[0])
-        setValue("to", groupMembers[1])
+        setValue("from", groupMembers[0]);
+        setValue("to", groupMembers[1]);
       }
-  
     }
     getGroup();
   }, [params.groupId, navigate, setValue, groupMembers]);
-
-
 
   async function onSubmit(input: TransferInput) {
     try {
@@ -79,11 +76,29 @@ const AddEditTransfer = () => {
     <div>
       {errorText && <ErrorAlert text={errorText} />}
       <form
-        className="card w-2/3 mx-auto card-bordered bg-base-200"
+        className="card md:w-2/3 mx-auto card-bordered bg-base-200 card-compact md:card-normal"
         id="addTransferForm"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <h5 className="card-title">Add Transfer</h5>
+        <div className="flex justify-between">
+          <h5 className="card-title">Add Transfer</h5>
+          <button className="btn btn-circle" onClick={() => navigate(-1)}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
         <SelectField
           name="from"
           label="From"

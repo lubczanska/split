@@ -40,7 +40,7 @@ const AddExpense = () => {
           true
         );
         setParticipants(newParticipants);
-        setValue("paidBy", groupMembers[0])
+        setValue("paidBy", groupMembers[0]);
       }
     }
     getGroup();
@@ -54,8 +54,6 @@ const AddExpense = () => {
     if (equal) splitEqually(nextParticipants.filter(Boolean).length, position);
   };
 
-
-
   /*
   set participant amounts to an equal share 
   */
@@ -64,7 +62,8 @@ const AddExpense = () => {
     const res =
       Math.round((getValues("amount") / count + Number.EPSILON) * 100) / 100;
     participants.forEach((selected, index) => {
-      if (selected || index==pos) setValue(`costSplit.${groupMembers[index]}`, res);
+      if (selected || index == pos)
+        setValue(`costSplit.${groupMembers[index]}`, res);
     });
   };
 
@@ -96,24 +95,31 @@ const AddExpense = () => {
     <div>
       {errorText && <ErrorAlert text={errorText} />}
       <form
-        className="card w-2/3 mx-auto card-bordered bg-base-200"
+        className="card md:w-2/3 mx-auto card-bordered bg-base-200 card-compact md:card-normal"
         id="addExpenseForm"
         onSubmit={handleSubmit(onSubmit)}
       >
         <div className="flex justify-between">
           <h5 className="card-title">Add Expense</h5>
-          <svg
-            className="h-6 w-6 fill-current md:h-8 md:w-8"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-          >
-            <path d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z"></path>
-          </svg>
+          <button className="btn btn-circle" onClick={() => navigate(-1)}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
         </div>
 
-        <div className="flex gap-20">
+        <div className="flex flex-wrap lg:gap-20">
           <TextInputField
             name="name"
             label="Name"
@@ -133,7 +139,7 @@ const AddExpense = () => {
           />
         </div>
 
-        <div className="flex gap-20">
+        <div className="flex flex-wrap lg:gap-20">
           <TextInputField
             name="amount"
             label="Amount"
