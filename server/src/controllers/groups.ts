@@ -198,6 +198,80 @@ export const updateGroup: RequestHandler<
 };
 
 /*
+Remove user from group members
+Accepts: Group Id, User Id
+Validation: User is not the group owner
+*/
+export const leaveGroup: RequestHandler = async (req, res, next) => {
+  const userId = req.params.userId;
+  const groupId = req.params.groupId;
+  try {
+    if (!mongoose.isValidObjectId(groupId)) {
+      throw createHttpError(400, "Invalid group id");
+    }
+    const group = await GroupModel.findById(groupId).exec();
+    if (!group) {
+      throw createHttpError(404, "Group not found");
+    }
+
+    if (group.owner.equals(userId)) {
+      throw createHttpError(400, "Owner cannot leave the group");
+    }
+
+    group.members.forEach((member) => {
+      if (member.id === userId) {
+        delete member.id;
+      }
+    });
+
+    const updatedGroup = await group.save();
+
+    res.status(200).json(updatedGroup);
+  } catch (error) {
+    next(error);
+  }
+};
+
+/*
+Add user to group members
+Accepts: Group Id, User Id, name
+Validation: (User is not in the group already? )
+*/
+export const joinGroup: RequestHandler = async (req, res, next) => {
+  const userId = req.params.userId;
+  const groupId = req.params.groupId;
+  const name = req.params.name;
+  try {
+    if (!mongoose.isValidObjectId(groupId)) {
+      throw createHttpError(400, "Invalid group id");
+    }
+    const group = await GroupModel.findById(groupId).exec();
+    if (!group) {
+      throw createHttpError(404, "Group not found");
+    }
+
+    if (group.owner.equals(userId)) {
+      throw createHttpError(400, "Owner cannot leave the group");
+    }
+
+    group.members.forEach((member) => {
+      if (member.id === userId && member.name !== name) {
+        throw createHttpError(400, "You cannot join a group twice");
+      }
+      if (member.name === name) {
+        member.id = userId;
+      }
+    });
+
+    const updatedGroup = await group.save();
+
+    res.status(200).json(updatedGroup);
+  } catch (error) {
+    next(error);
+  }
+};
+
+/*
 Delete Group with its expenses and settlements
 Accepts: Group Id, User Id
 Validation: Only the owner can delete a group

@@ -15,7 +15,15 @@ async function fetchData(input: RequestInfo, init?: RequestInit) {
 
 //Users Api
 export async function getLoggedInUser(): Promise<User> {
-  const response = await fetchData("http://localhost:5000/api/users", {
+  const response = await fetchData("http://localhost:5000/api/users/", {
+    method: "GET",
+    credentials: "include",
+  });
+  return response.json();
+}
+
+export async function fetchUser(userId: string): Promise<User> {
+  const response = await fetchData("http://localhost:5000/api/users" + userId, {
     method: "GET",
     credentials: "include",
   });
@@ -74,13 +82,15 @@ export async function logOut() {
   });
 }
 
-
 // Groups Api
-export async function fetchGroup(groupId : string) : Promise<Group> {
-  const response = await fetchData("http://localhost:5000/api/groups/" + groupId, {
-    method: "GET",
-    credentials: "include",
-  });
+export async function fetchGroup(groupId: string): Promise<Group> {
+  const response = await fetchData(
+    "http://localhost:5000/api/groups/" + groupId,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
   return response.json();
 }
 export async function fetchGroups(): Promise<Group[]> {
@@ -95,11 +105,10 @@ export interface GroupInput {
   name: string;
   emoji: string;
   currency: string;
-  members: {name: string}[];
+  members: { name: string; id?: string }[];
 }
 
 export async function createGroup(group: GroupInput): Promise<Group> {
-  
   const response = await fetchData("http://localhost:5000/api/groups", {
     method: "POST",
     credentials: "include",
@@ -136,7 +145,30 @@ export async function deleteGroup(groupId: string) {
   });
 }
 
-export async function fetchGroupSettlement(groupId: string): Promise<[string,string,number][]> {
+export async function leaveGroup(groupId: string, userId: string) {
+  await fetchData("http://localhost:5000/api/groups/leave/" + groupId, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ userId: userId }),
+  });
+}
+
+export async function joinGroup(groupId: string, userId: string, name: string) {
+  await fetchData("http://localhost:5000/api/groups/join/" + groupId, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ userId: userId, name: name }),
+  });
+}
+export async function fetchGroupSettlement(
+  groupId: string
+): Promise<[string, string, number][]> {
   const response = await fetchData(
     "http://localhost:5000/api/groups/balance/" + groupId,
     {
@@ -261,7 +293,9 @@ export async function fetchGroupTotal(groupId: string): Promise<number> {
   return response.json();
 }
 
-export async function getGroupCategoryTotal(groupId: string): Promise<[string, number][]> {
+export async function getGroupCategoryTotal(
+  groupId: string
+): Promise<[string, number][]> {
   const response = await fetchData(
     "http://localhost:5000/api/groups/categoryTotal/" + groupId,
     {
@@ -271,7 +305,9 @@ export async function getGroupCategoryTotal(groupId: string): Promise<[string, n
   );
   return response.json();
 }
-export async function getGroupUserTotal(groupId: string): Promise<[string, number][]> {
+export async function getGroupUserTotal(
+  groupId: string
+): Promise<[string, number][]> {
   const response = await fetchData(
     "http://localhost:5000/api/groups/userTotal/" + groupId,
     {

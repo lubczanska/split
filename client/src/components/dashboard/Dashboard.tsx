@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { Group as GroupModel } from "../models/group";
-import * as Api from "../network/api";
-import GroupCard from "./group/GroupCard";
+import { Group as GroupModel } from "../../models/group";
+import * as Api from "../../network/api";
+import GroupCard from "../group/GroupCard";
 import { useNavigate } from "react-router-dom";
-import configData from "../config.json";
-import { User as UserModel } from "../models/user";
-import ErrorAlert from "./ErrorAlert";
+import configData from "../../config.json";
+import { User as UserModel } from "../../models/user";
+import ErrorAlert from "../ErrorAlert";
 
 const Dashboard = () => {
   const [loggedInUser, setLoggedInUser] = useState<UserModel | null>(null);

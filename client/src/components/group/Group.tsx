@@ -13,6 +13,7 @@ import ViewExpense from "../expense/ViewExpense";
 import Settlements from "./Settlements";
 import DebtStat from "./DebtStat";
 import Charts from "./Charts";
+import GroupActions from "./GroupActions";
 
 const Group = () => {
   const params = useParams();
@@ -72,15 +73,16 @@ const Group = () => {
     }
   }
 
-  async function deleteGroup(groupId: string) {
-    try {
-      await Api.deleteGroup(groupId);
-      navigate(configData.DASHBOARD_URL);
-    } catch (error) {
-      if (error instanceof Error) setErrorText(error.message);
-      else alert(error);
-    }
-  }
+  // will be useful soon
+  // async function deleteGroup(groupId: string) {
+  //   try {
+  //     await Api.deleteGroup(groupId);
+  //     navigate(configData.DASHBOARD_URL);
+  //   } catch (error) {
+  //     if (error instanceof Error) setErrorText(error.message);
+  //     else alert(error);
+  //   }
+  // }
 
   async function getSettlements() {
     if (group) {
@@ -200,7 +202,8 @@ const Group = () => {
                 />
               </svg>
             </button>
-            <Link to={configData.EDIT_GROUP_URL + group?._id}>
+            {group && loggedInUser && <GroupActions group={group} user={loggedInUser} onError={setErrorText} />}
+            {/* <Link to={configData.EDIT_GROUP_URL + group?._id}>
               <button className="btn btn-outline btn-secondary">EDIT</button>
             </Link>
             <button
@@ -211,7 +214,7 @@ const Group = () => {
               className="btn btn-outline btn-secondary"
             >
               DELETE
-            </button>
+            </button> */}
           </div>
         </div>
         {/* Group header end */}

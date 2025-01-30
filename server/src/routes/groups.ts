@@ -6,10 +6,12 @@ router.get("/balance/:groupId", GroupsController.getSettlements);
 router.get("/", GroupsController.getUserGroups);
 router.get("/:groupId", GroupsController.getGroup);
 router.post("/", GroupsController.createGroup);
+router.post("/leave/:groupId", GroupsController.leaveGroup);
+router.post("/join/:groupId", GroupsController.joinGroup);
 router.patch("/:groupId", GroupsController.updateGroup);
 router.delete("/:groupId", GroupsController.deleteGroup);
 
-// other
+// stats
 router.get("/total/:groupId", GroupsController.getTotalGroupExpenses);
 router.get(
   "/categoryTotal/:groupId",

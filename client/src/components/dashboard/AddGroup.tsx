@@ -20,7 +20,16 @@ const AddGroup = () => {
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<GroupInput>({ defaultValues: { members: [{ name: "" }] } });
+  } = useForm<GroupInput>({
+    defaultValues: {
+      members: [
+        {
+          name: location.state.user.username,
+          id: location.state.user.username,
+        },
+      ],
+    },
+  });
 
   const { fields, append, remove } = useFieldArray({
     name: "members",
@@ -29,7 +38,7 @@ const AddGroup = () => {
 
   const onSubmit = async (group: GroupInput) => {
     try {
-      group.members.unshift({ name: location.state.user.username });
+      // group.members.unshift({ name: location.state.user.username });
       // unique member names validation
       const members = group.members.map((a) => a.name);
       if (members.length !== new Set(members).size)
@@ -101,12 +110,22 @@ const AddGroup = () => {
         <label className="label">Members</label>
 
         <div className="join join-vertical">
-          <input
-            placeholder="name"
-            readOnly
-            value={location.state.user.username}
-            className={"join-item input input-bordered"}
-          />
+          <div className="join-item input input-bordered ">
+            <div className="flex items-center justify-between">
+              <input
+                placeholder="owner"
+                {...register(`members.0.name` as const, {
+                  required: true,
+                })}
+                defaultValue={location.state.user.username}
+                className={"input input-ghosted px-0 "}
+              />
+              <div className="badge badge-primary">
+                @{location.state.user.username}
+              </div>
+            </div>
+          </div>
+
           {fields.map((field, index) => {
             return (
               <div key={field.id} className="join-item input input-bordered ">
@@ -114,7 +133,7 @@ const AddGroup = () => {
                   <input
                     className={"input input-ghosted px-0 "}
                     placeholder="name"
-                    {...register(`members.${index}.name` as const, {
+                    {...register(`members.${index + 1}.name` as const, {
                       required: true,
                     })}
                   />
@@ -122,7 +141,7 @@ const AddGroup = () => {
                     type="button"
                     className="btn btn-ghost btn-sm "
                     onClick={() => {
-                      remove(index);
+                      remove(index + 1);
                     }}
                   >
                     <svg
