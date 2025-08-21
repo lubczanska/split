@@ -14,6 +14,7 @@ import AddExpense from "./components/expense/AddEditExpense";
 import * as Api from "./network/api";
 import AddEditTransfer from "./components/expense/AddEditTransfer";
 import EditGroup from "./components/group/EditGroup";
+import JoinGroup from "./components/group/joinGroup";
 
 function App() {
   const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
@@ -50,6 +51,7 @@ function App() {
             <Route path={configData.EDIT_GROUP_URL} element={<EditGroup />} />
             <Route path={configData.VIEW_GROUP_URL} element={<Group />} />
             <Route path={configData.ADD_EXPENSE_URL} element={<AddExpense />} />
+            <Route path={configData.JOIN_GROUP_URL} element={<JoinGroup />} />
             <Route
               path={configData.ADD_TRANSFER_URL}
               element={<AddEditTransfer />}

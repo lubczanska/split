@@ -166,6 +166,7 @@ export async function joinGroup(groupId: string, userId: string, name: string) {
     body: JSON.stringify({ userId: userId, name: name }),
   });
 }
+
 export async function fetchGroupSettlement(
   groupId: string
 ): Promise<[string, string, number][]> {

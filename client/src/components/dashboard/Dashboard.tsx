@@ -5,7 +5,7 @@ import GroupCard from "../group/GroupCard";
 import { useNavigate } from "react-router-dom";
 import configData from "../../config.json";
 import { User as UserModel } from "../../models/user";
-import ErrorAlert from "../ErrorAlert";
+import { ErrorAlert } from "../Alert";
 
 const Dashboard = () => {
   const [loggedInUser, setLoggedInUser] = useState<UserModel | null>(null);
@@ -34,11 +34,22 @@ const Dashboard = () => {
       }
     }
     loadGroups();
-  }, []);
+  }, [navigate]);
 
   const addGroup = () => {
     navigate(configData.ADD_GROUP_URL, { state: { user: loggedInUser } });
   };
+
+  const addGroupButtond = (
+    <button onClick={addGroup} className="lg:basis-1/4 grow lg:grow-0">
+      <div className="card bg-primary h-full border-primary border hover:bg-base-300 justify-center items-center text-primary-content hover:text-primary">
+        <div className="flex gap-4 items-start ">
+          <p className="font-normal text-2xl">+</p>
+          <h5 className="mb-2 text-xl font-bold">Add group</h5>
+        </div>
+      </div>
+    </button>
+  );
 
   const GroupGrid = (
     <div className="px-8 py-16 flex flex-wrap gap-6">
@@ -49,14 +60,6 @@ const Dashboard = () => {
           username={loggedInUser ? loggedInUser.username : ""}
         />
       ))}
-      <button onClick={addGroup} className="lg:basis-1/4 grow lg:grow-0">
-        <div className="card bg-primary h-full border-primary border hover:bg-base-300 justify-center items-center text-primary-content hover:text-primary">
-          <div className="flex gap-4 items-start ">
-            <p className="font-normal text-2xl">+</p>
-            <h5 className="mb-2 text-xl font-bold">Add group</h5>
-          </div>
-        </div>
-      </button>
     </div>
   );
 
@@ -78,6 +81,7 @@ const Dashboard = () => {
           ) : (
             <p className=" py-4">Looks empty in here :(</p>
           )}
+          {addGroupButtond}
         </>
       )}
     </div>

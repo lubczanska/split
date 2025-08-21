@@ -8,7 +8,7 @@ import { Link, useNavigate, useParams } from "react-router";
 import Button from "../Button";
 import configData from "../../config.json";
 import Balance from "./Balance";
-import ErrorAlert from "../ErrorAlert";
+import { ErrorAlert } from "../Alert";
 import ViewExpense from "../expense/ViewExpense";
 import Settlements from "./Settlements";
 import DebtStat from "./DebtStat";
@@ -151,6 +151,7 @@ const Group = () => {
       </ul>
     </div>
   );
+
   return expensesLoading ? (
     <div className="mx-auto py-20">
       <span className="loading loading-dots loading-lg"></span>
@@ -183,7 +184,7 @@ const Group = () => {
             <h2 className="stat-value">{group?.name}</h2>
           </div>
           <div className="card-actions">
-            <button
+            {/* <button
               className="btn btn-circle btn-ghost"
               onClick={() => navigate(-1)}
             >
@@ -201,8 +202,14 @@ const Group = () => {
                   d="M6 18L18 6M6 6l12 12"
                 />
               </svg>
-            </button>
-            {group && loggedInUser && <GroupActions group={group} user={loggedInUser} onError={setErrorText} />}
+            </button> */}
+            {group && loggedInUser && (
+              <GroupActions
+                group={group}
+                user={loggedInUser}
+                onError={setErrorText}
+              />
+            )}
             {/* <Link to={configData.EDIT_GROUP_URL + group?._id}>
               <button className="btn btn-outline btn-secondary">EDIT</button>
             </Link>

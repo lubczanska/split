@@ -7,7 +7,7 @@ import { useNavigate, useParams } from "react-router";
 import * as Api from "../../network/api";
 import configData from "../../config.json";
 import { ExpenseInput } from "../../network/api";
-import ErrorAlert from "../ErrorAlert";
+import ErrorAlert from "../Alert";
 import { CATEGORIES } from "../../util/helper";
 
 const AddExpense = () => {
@@ -44,7 +44,7 @@ const AddExpense = () => {
       }
     }
     getGroup();
-  }, [params.groupId, navigate, setValue, groupMembers[0]]);
+  }, [params.groupId, navigate, setValue, groupMembers]);
 
   const changeParticipant = (position: number) => {
     const nextParticipants = participants.map((item, index) =>
@@ -146,6 +146,7 @@ const AddExpense = () => {
             register={register}
             registerOptions={{
               required: "Required",
+              // replace pattern with parsing a simple math equation function that throws "invalid amount calculation" on parse error
               pattern: {
                 value: /^\d+(?:\.\d{1,2})?$/gm,
                 message: "Impossible amount of money",

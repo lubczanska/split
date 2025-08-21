@@ -53,8 +53,20 @@ export function categoryEmoji(category: string) {
 
 const COLORS = ["#ff6384", "#36a2eb", "#ffcd56"];
 
-export const getColor = (index: number): string =>  {
+export const getColor = (index: number): string => {
   if (index < COLORS.length) return COLORS[index];
-  else return "#ffffff";;
-}
+  else return "#ffffff";
+};
 
+// export const parseAmount = (expr: string) : number => {
+//   // parse expr and return result
+//   // throw error if expr is invalid
+//   throw "todo"
+// }
+
+// export const currencyChange = (amount: number, sourceCurrency: string, targetCurrency) : number => {
+//   // get exchange rate from api call
+//   // return amount in target currency
+//   throw "todo"
+
+// }

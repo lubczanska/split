@@ -8,7 +8,8 @@
   "EDIT_GROUP_URL_LINK": "/dashboard/editGroup/",
   "VIEW_EXPENSE_URL": "/dashboard/viewExpense/:expenseId",
   "ADD_EXPENSE_URL": "/dashboard/addExpense/:groupId",
-  "ADD_TRANSFER_URL": "/dashboard/addTransfer/:groupId"
+  "ADD_TRANSFER_URL": "/dashboard/addTransfer/:groupId",
+  "JOIN_GROUP_URL": "/dashboard/joinGroup/:groupId"
 
 
 

@@ -4,7 +4,7 @@ import { SignUpCredentials } from "../../network/api";
 import * as UsersApi from "../../network/api";
 import TextInputField from "../form/TextInputField";
 import { ReactElement, useState } from "react";
-import ErrorAlert from "../ErrorAlert";
+import ErrorAlert from "../Alert";
 import { useNavigate } from "react-router";
 
 interface SignUpProps {

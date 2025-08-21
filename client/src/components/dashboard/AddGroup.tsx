@@ -6,7 +6,7 @@ import Button from "../Button";
 import { useLocation, useNavigate } from "react-router";
 import configData from "../../config.json";
 import { useState } from "react";
-import ErrorAlert from "../ErrorAlert";
+import ErrorAlert from "../Alert";
 import { CURRENCIES, EMOJI } from "../../util/helper";
 
 const AddGroup = () => {
