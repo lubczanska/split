@@ -1,5 +1,5 @@
 import "dotenv/config";
-import express, { Request, Response, NextFunction } from "express";
+import express, { Request, Response } from "express";
 import expensesRoutes from "./routes/expenses";
 import userRoutes from "./routes/users";
 import groupRoutes from "./routes/groups";
@@ -18,7 +18,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      maxAge: 24 * 60 * 60 * 1000, //24h
+      maxAge: 24 * 60 * 60 * 1000, // 24h
       secure: false,
     },
     rolling: true,
@@ -32,12 +32,11 @@ app.use("/api/users", userRoutes);
 app.use("/api/groups", groupRoutes);
 app.use("/api/expenses", expensesRoutes);
 
-app.use((req, res, next) => {
+app.use((_req, _res, next) => {
   next(createHttpError(404, "Endpoint not found"));
 });
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
+app.use((error: unknown, _req: Request, res: Response) => {
   console.error(error);
   let errorMsg = "An unknown error has ocurred";
   let statusCode = 500;
@@ -46,6 +45,10 @@ app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
     errorMsg = error.message;
   }
   res.status(statusCode).json({ error: errorMsg });
+});
+
+app.listen(env.PORT, () => {
+  console.log(`Example app listening on port ${env.PORT}`);
 });
 
 export default app;
