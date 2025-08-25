@@ -18,14 +18,12 @@ export const getAuthenticatedUser: RequestHandler = async (req, res, next) => {
 
 export const getUser: RequestHandler = async (req, res, next) => {
   try {
-    const user = await UserModel.findById(req.params.userId)
-      .exec();
+    const user = await UserModel.findById(req.params.userId).exec();
     res.status(201).json(user);
   } catch (error) {
     next(error);
   }
 };
-
 
 export const getUserOwed: RequestHandler = async (req, res, next) => {
   const userId = req.session.userId;
@@ -41,7 +39,7 @@ export const getUserOwed: RequestHandler = async (req, res, next) => {
     ).exec();
     balances.forEach((bal) => {
       const userBal = bal.memberBalance.get(user.username);
-      if (userBal) owed += userBal
+      if (userBal) owed += userBal;
     });
 
     res.status(200).json(owed);

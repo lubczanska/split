@@ -94,7 +94,9 @@ const clearBalances = async (
   members.forEach((member) => {
     group.memberBalance.set(
       member,
-      round2(Number(group.memberBalance.get(member)) + Number(split.get(member)))
+      round2(
+        Number(group.memberBalance.get(member)) + Number(split.get(member))
+      )
     );
   });
   group.memberBalance.set(
@@ -127,6 +129,15 @@ export const createExpense: RequestHandler<
     }
     if (!name || !amount || !date || !paidBy || !members || !costSplit)
       throw createHttpError(400, "No required expense parameters");
+
+    // do individual amounts sum to amount?
+    const sum = Object.values(costSplit).reduce((acc, x) => acc + x, 0);
+    if (sum != amount)
+      //what about rounding
+      throw createHttpError(
+        400,
+        "Indvidual amounts don't sum to expense amount"
+      );
 
     const split = new Map(Object.entries(costSplit));
     await updateBalances(groupId, paidBy, amount, members, split);
@@ -185,7 +196,7 @@ export const updateExpense: RequestHandler<
 
     const expense = await ExpenseModel.findById(expenseId).exec();
     if (!expense) {
-      throw createHttpError(404, "expense not found");
+      throw createHttpError(404, "Expense not found");
     }
 
     const groupId = expense.groupId.toString();
