@@ -47,8 +47,4 @@ app.use((error: unknown, _req: Request, res: Response) => {
   res.status(statusCode).json({ error: errorMsg });
 });
 
-app.listen(env.PORT, () => {
-  console.log(`Example app listening on port ${env.PORT}`);
-});
-
 export default app;
