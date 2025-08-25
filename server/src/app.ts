@@ -4,7 +4,7 @@ import expensesRoutes from "./routes/expenses";
 import userRoutes from "./routes/users";
 import groupRoutes from "./routes/groups";
 import createHttpError, { isHttpError } from "http-errors";
-// import cors from "cors";
+import cors from "cors";
 import session from "express-session";
 import env from "./util/validateEnv";
 import MongoStore from "connect-mongo";
@@ -26,7 +26,7 @@ app.use(
   })
 );
 
-// app.use(cors({ credentials: true, origin: true }));
+app.use(cors({ credentials: true, origin: true }));
 
 app.use("/api/users", userRoutes);
 app.use("/api/groups", groupRoutes);
