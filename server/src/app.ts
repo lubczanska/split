@@ -26,7 +26,7 @@ app.use(
   })
 );
 
-app.use(cors({ credentials: true, origin: true }));
+// app.use(cors({ credentials: true, origin: true }));
 
 app.use("/api/users", userRoutes);
 app.use("/api/groups", groupRoutes);
