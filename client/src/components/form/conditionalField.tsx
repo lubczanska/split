@@ -1,8 +1,8 @@
-import { Controller, useWatch } from "react-hook-form";
-
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const ConditionalField = ({ control, index, field }) => {
+import { Controller, ControllerProps, useWatch } from "react-hook-form";
+interface IConditionalFieldProps extends ControllerProps {
+  index: number;
+}
+const ConditionalField = ({ control, index }: IConditionalFieldProps) => {
   const value = useWatch({
     name: "test",
     control,

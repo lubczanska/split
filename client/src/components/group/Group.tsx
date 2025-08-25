@@ -8,7 +8,7 @@ import { Link, useNavigate, useParams } from "react-router";
 import Button from "../Button";
 import configData from "../../config.json";
 import Balance from "./Balance";
-import { ErrorAlert } from "../Alert";
+import ErrorAlert from "../ErrorAlert";
 import ViewExpense from "../expense/ViewExpense";
 import Settlements from "./Settlements";
 import DebtStat from "./DebtStat";
@@ -26,6 +26,7 @@ const Group = () => {
   const [settlements, setSettlements] = useState<
     [string, string, number][] | null
   >(null);
+  const [myMember, setMyMember] = useState<string | null>(null);
   const [showExpense, setShowExpense] = useState<ExpenseModel | null>(null);
   const expenseRef = useRef<HTMLDialogElement | null>(null);
 
@@ -45,6 +46,9 @@ const Group = () => {
           const user = await Api.getLoggedInUser();
           if (user) {
             setLoggedInUser(user);
+            setMyMember(
+              group.members.find((m) => m.id == user.username)?.name || null
+            );
           }
         } else {
           navigate(configData.DASHBOARD_URL);
@@ -261,14 +265,15 @@ const Group = () => {
           {/* Expenses end */}
           <div className="card bg-base-100 grow basis-1/4">
             {/* Debt stat */}
-            <DebtStat
-              debt={
-                loggedInUser ? group?.memberBalance[loggedInUser.username] : 0
-              }
-              currency={group?.currency}
-              onClick={getSettlements}
-              showButton={!settlements}
-            />
+            {myMember && (
+              <DebtStat
+                debt={loggedInUser ? group?.memberBalance[myMember] : 0}
+                currency={group?.currency}
+                onClick={getSettlements}
+                showButton={!settlements}
+              />
+            )}
+
             {settlements ? (
               <div>
                 <Settlements

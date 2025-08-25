@@ -5,7 +5,7 @@ import GroupCard from "../group/GroupCard";
 import { useNavigate } from "react-router-dom";
 import configData from "../../config.json";
 import { User as UserModel } from "../../models/user";
-import { ErrorAlert } from "../Alert";
+import ErrorAlert from "../ErrorAlert";
 
 const Dashboard = () => {
   const [loggedInUser, setLoggedInUser] = useState<UserModel | null>(null);

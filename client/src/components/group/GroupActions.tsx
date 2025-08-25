@@ -4,7 +4,7 @@ import { User } from "../../models/user";
 import { Link, useNavigate } from "react-router";
 import configData from "../../config.json";
 import * as Api from "../../network/api";
-import { InfoAlert } from "../Alert";
+import InfoAlert from "../InfoAlert";
 
 interface ActionsProps {
   user: User;

@@ -1,4 +1,5 @@
 {
+  "SITE_URL": "https://split-backend-o6ro.onrender.com",
   "LANDING_URL": "/",
   "LOGIN_URL": "/login",
   "DASHBOARD_URL": "/dashboard",
@@ -10,7 +11,4 @@
   "ADD_EXPENSE_URL": "/dashboard/addExpense/:groupId",
   "ADD_TRANSFER_URL": "/dashboard/addTransfer/:groupId",
   "JOIN_GROUP_URL": "/dashboard/joinGroup/:groupId"
-
-
-
 }

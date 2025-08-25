@@ -6,7 +6,7 @@ import Button from "../Button";
 import { useLocation, useNavigate } from "react-router";
 import configData from "../../config.json";
 import { useState } from "react";
-import ErrorAlert from "../Alert";
+import ErrorAlert from "../ErrorAlert";
 import { CURRENCIES, EMOJI } from "../../util/helper";
 
 const AddGroup = () => {
@@ -26,6 +26,9 @@ const AddGroup = () => {
         {
           name: location.state.user.username,
           id: location.state.user.username,
+        },
+        {
+          name: "",
         },
       ],
     },
@@ -110,30 +113,30 @@ const AddGroup = () => {
         <label className="label">Members</label>
 
         <div className="join join-vertical">
-          <div className="join-item input input-bordered ">
-            <div className="flex items-center justify-between">
-              <input
-                placeholder="owner"
-                {...register(`members.0.name` as const, {
-                  required: true,
-                })}
-                defaultValue={location.state.user.username}
-                className={"input input-ghosted px-0 "}
-              />
-              <div className="badge badge-primary">
-                @{location.state.user.username}
-              </div>
-            </div>
-          </div>
-
           {fields.map((field, index) => {
-            return (
+            return index == 0 ? (
+              <div className="join-item input input-bordered ">
+                <div className="flex items-center justify-between">
+                  <input
+                    placeholder="owner"
+                    {...register(`members.0.name` as const, {
+                      required: true,
+                    })}
+                    defaultValue={location.state.user.username}
+                    className={"input input-ghosted px-0 "}
+                  />
+                  <div className="badge badge-primary">
+                    @{location.state.user.username}
+                  </div>
+                </div>
+              </div>
+            ) : (
               <div key={field.id} className="join-item input input-bordered ">
                 <div className="flex items-center justify-between">
                   <input
                     className={"input input-ghosted px-0 "}
                     placeholder="name"
-                    {...register(`members.${index + 1}.name` as const, {
+                    {...register(`members.${index}.name` as const, {
                       required: true,
                     })}
                   />
@@ -141,7 +144,7 @@ const AddGroup = () => {
                     type="button"
                     className="btn btn-ghost btn-sm "
                     onClick={() => {
-                      remove(index + 1);
+                      remove(index);
                     }}
                   >
                     <svg

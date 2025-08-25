@@ -7,7 +7,7 @@ import { useNavigate, useParams } from "react-router";
 import * as Api from "../../network/api";
 import configData from "../../config.json";
 import { ExpenseInput } from "../../network/api";
-import ErrorAlert from "../Alert";
+import ErrorAlert from "../ErrorAlert";
 import { CATEGORIES } from "../../util/helper";
 
 const AddExpense = () => {
@@ -44,11 +44,11 @@ const AddExpense = () => {
       }
     }
     getGroup();
-  }, [params.groupId, navigate, setValue, groupMembers]);
+  }, [params.groupId, navigate, setValue]);
 
   const changeParticipant = (position: number) => {
     const nextParticipants = participants.map((item, index) =>
-      position === index ? !item : item
+      position == index ? !item : item
     );
     setParticipants(nextParticipants);
     if (equal) splitEqually(nextParticipants.filter(Boolean).length, position);

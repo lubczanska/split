@@ -4,7 +4,7 @@ import * as UsersApi from "../../network/api";
 import { User as UserModel } from "../../models/user";
 import TextInputField from "../form/TextInputField";
 import { useState, ReactElement } from "react";
-import ErrorAlert from "../Alert";
+import ErrorAlert from "../ErrorAlert";
 import { useNavigate } from "react-router";
 
 interface LogInProps {

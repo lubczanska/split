@@ -5,7 +5,7 @@ import * as Api from "../../network/api";
 import { useNavigate, useParams } from "react-router";
 import Button from "../Button";
 import configData from "../../config.json";
-import { ErrorAlert } from "../Alert";
+import ErrorAlert from "../ErrorAlert";
 import { isMember } from "../../util/membership";
 
 const JoinGroup = () => {

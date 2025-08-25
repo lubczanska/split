@@ -8,7 +8,7 @@ import configData from "../../config.json";
 import { useEffect, useState } from "react";
 import { Group as GroupModel } from "../../models/group";
 import * as Api from "../../network/api";
-import ErrorAlert from "../Alert";
+import ErrorAlert from "../ErrorAlert";
 import { EMOJI } from "../../util/helper";
 
 const EditGroup = () => {

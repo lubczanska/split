@@ -13,7 +13,7 @@ const Settlements = ({
     <div className="flex flex-col gap-2">
       <span className="card-title pb-4">Suggested Reimbursements</span>
       {settlements.map(([from, to, amt]) => (
-        <div className="bg-base-200 px-4 py-4 rounded-lg flex flex-col justify-around items-center gap-2 py-1">
+        <div className="bg-base-200 px-4 py-4 rounded-lg flex flex-col justify-around items-center gap-2">
           <div className="flex gap-2">
             <p className="font-semibold">{from}</p>
             <p>owes</p>

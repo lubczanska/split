@@ -7,7 +7,7 @@ import { useNavigate, useParams } from "react-router";
 import * as Api from "../../network/api";
 import configData from "../../config.json";
 import { ExpenseInput } from "../../network/api";
-import ErrorAlert from "../Alert";
+import ErrorAlert from "../ErrorAlert";
 
 interface TransferInput {
   from: string;

@@ -1,6 +1,7 @@
 import { Expense } from "../models/expense";
 import { User } from "../models/user";
 import { Group } from "../models/group";
+import configData from "./../config.json";
 
 async function fetchData(input: RequestInfo, init?: RequestInit) {
   const response = await fetch(input, init);
@@ -15,7 +16,7 @@ async function fetchData(input: RequestInfo, init?: RequestInit) {
 
 //Users Api
 export async function getLoggedInUser(): Promise<User> {
-  const response = await fetchData("http://localhost:5000/api/users/", {
+  const response = await fetchData(configData.SITE_URL + "/api/users/", {
     method: "GET",
     credentials: "include",
   });
@@ -23,15 +24,18 @@ export async function getLoggedInUser(): Promise<User> {
 }
 
 export async function fetchUser(userId: string): Promise<User> {
-  const response = await fetchData("http://localhost:5000/api/users" + userId, {
-    method: "GET",
-    credentials: "include",
-  });
+  const response = await fetchData(
+    configData.SITE_URL + "/api/users" + userId,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
   return response.json();
 }
 
 export async function getUserOwed(): Promise<number> {
-  const response = await fetchData("http://localhost:5000/api/users/owed", {
+  const response = await fetchData(configData.SITE_URL + "/api/users/owed", {
     method: "GET",
     credentials: "include",
   });
@@ -47,7 +51,7 @@ export interface SignUpCredentials {
 }
 
 export async function signUp(credentials: SignUpCredentials): Promise<User> {
-  const response = await fetchData("http://localhost:5000/api/users/signup", {
+  const response = await fetchData(configData.SITE_URL + "/api/users/signup", {
     method: "POST",
     credentials: "include",
     headers: {
@@ -64,7 +68,7 @@ export interface LogInCredentials {
 }
 
 export async function logIn(credentials: LogInCredentials): Promise<User> {
-  const response = await fetchData("http://localhost:5000/api/users/login", {
+  const response = await fetchData(configData.SITE_URL + "/api/users/login", {
     method: "POST",
     credentials: "include",
     headers: {
@@ -76,7 +80,7 @@ export async function logIn(credentials: LogInCredentials): Promise<User> {
 }
 
 export async function logOut() {
-  await fetchData("http://localhost:5000/api/users/logout", {
+  await fetchData(configData.SITE_URL + "/api/users/logout", {
     method: "POST",
     credentials: "include",
   });
@@ -85,7 +89,7 @@ export async function logOut() {
 // Groups Api
 export async function fetchGroup(groupId: string): Promise<Group> {
   const response = await fetchData(
-    "http://localhost:5000/api/groups/" + groupId,
+    configData.SITE_URL + "/api/groups/" + groupId,
     {
       method: "GET",
       credentials: "include",
@@ -94,7 +98,7 @@ export async function fetchGroup(groupId: string): Promise<Group> {
   return response.json();
 }
 export async function fetchGroups(): Promise<Group[]> {
-  const response = await fetchData("http://localhost:5000/api/groups", {
+  const response = await fetchData(configData.SITE_URL + "/api/groups", {
     method: "GET",
     credentials: "include",
   });
@@ -109,7 +113,7 @@ export interface GroupInput {
 }
 
 export async function createGroup(group: GroupInput): Promise<Group> {
-  const response = await fetchData("http://localhost:5000/api/groups", {
+  const response = await fetchData(configData.SITE_URL + "/api/groups", {
     method: "POST",
     credentials: "include",
     headers: {
@@ -125,7 +129,7 @@ export async function updateGroup(
   group: GroupInput
 ): Promise<Group> {
   const response = await fetchData(
-    "http://localhost:5000/api/groups/" + groupId,
+    configData.SITE_URL + "/api/groups/" + groupId,
     {
       method: "PATCH",
       credentials: "include",
@@ -139,31 +143,35 @@ export async function updateGroup(
 }
 
 export async function deleteGroup(groupId: string) {
-  await fetchData("http://localhost:5000/api/groups/" + groupId, {
+  await fetchData(configData.SITE_URL + "/api/groups/" + groupId, {
     method: "DELETE",
     credentials: "include",
   });
 }
 
-export async function leaveGroup(groupId: string, userId: string) {
-  await fetchData("http://localhost:5000/api/groups/leave/" + groupId, {
+export async function leaveGroup(groupId: string, username: string) {
+  await fetchData(configData.SITE_URL + "/api/groups/leave/" + groupId, {
     method: "POST",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ userId: userId }),
+    body: JSON.stringify({ userId: username }),
   });
 }
 
-export async function joinGroup(groupId: string, userId: string, name: string) {
-  await fetchData("http://localhost:5000/api/groups/join/" + groupId, {
+export async function joinGroup(
+  groupId: string,
+  username: string,
+  name: string
+) {
+  await fetchData(configData.SITE_URL + "/api/groups/join/" + groupId, {
     method: "POST",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ userId: userId, name: name }),
+    body: JSON.stringify({ userId: username, name: name }),
   });
 }
 
@@ -171,7 +179,7 @@ export async function fetchGroupSettlement(
   groupId: string
 ): Promise<[string, string, number][]> {
   const response = await fetchData(
-    "http://localhost:5000/api/groups/balance/" + groupId,
+    configData.SITE_URL + "/api/groups/balance/" + groupId,
     {
       method: "GET",
       credentials: "include",
@@ -183,7 +191,7 @@ export async function fetchGroupSettlement(
 // Expenses Api
 export async function fetchGroupExpenses(groupId: string): Promise<Expense[]> {
   const response = await fetchData(
-    "http://localhost:5000/api/expenses/view/" + groupId,
+    configData.SITE_URL + "/api/expenses/view/" + groupId,
     {
       method: "GET",
       credentials: "include",
@@ -207,7 +215,7 @@ export async function createExpense(
   expense: ExpenseInput
 ): Promise<Expense> {
   const response = await fetchData(
-    "http://localhost:5000/api/expenses/" + groupId + "/addExpense",
+    configData.SITE_URL + "/api/expenses/" + groupId + "/addExpense",
     {
       method: "POST",
       credentials: "include",
@@ -243,7 +251,7 @@ export async function createTransfer(
     costSplit: split,
   };
   const response = await fetchData(
-    "http://localhost:5000/api/expenses/" + groupId + "/addExpense",
+    configData.SITE_URL + "/api/expenses/" + groupId + "/addExpense",
     {
       method: "POST",
       credentials: "include",
@@ -261,7 +269,7 @@ export async function updateExpense(
   expense: ExpenseInput
 ): Promise<Expense> {
   const response = await fetchData(
-    "http://localhost:5000/api/expenses/" + expenseId,
+    configData.SITE_URL + "/api/expenses/" + expenseId,
     {
       method: "PATCH",
       credentials: "include",
@@ -275,7 +283,7 @@ export async function updateExpense(
 }
 
 export async function deleteExpense(expenseId: string) {
-  await fetchData("http://localhost:5000/api/expenses/" + expenseId, {
+  await fetchData(configData.SITE_URL + "/api/expenses/" + expenseId, {
     method: "DELETE",
     credentials: "include",
   });
@@ -285,7 +293,7 @@ export async function deleteExpense(expenseId: string) {
 
 export async function fetchGroupTotal(groupId: string): Promise<number> {
   const response = await fetchData(
-    "http://localhost:5000/api/groups/total/" + groupId,
+    configData.SITE_URL + "/api/groups/total/" + groupId,
     {
       method: "GET",
       credentials: "include",
@@ -298,7 +306,7 @@ export async function getGroupCategoryTotal(
   groupId: string
 ): Promise<[string, number][]> {
   const response = await fetchData(
-    "http://localhost:5000/api/groups/categoryTotal/" + groupId,
+    configData.SITE_URL + "/api/groups/categoryTotal/" + groupId,
     {
       method: "GET",
       credentials: "include",
@@ -310,7 +318,7 @@ export async function getGroupUserTotal(
   groupId: string
 ): Promise<[string, number][]> {
   const response = await fetchData(
-    "http://localhost:5000/api/groups/userTotal/" + groupId,
+    configData.SITE_URL + "/api/groups/userTotal/" + groupId,
     {
       method: "GET",
       credentials: "include",
