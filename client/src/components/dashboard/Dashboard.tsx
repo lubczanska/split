@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Group as GroupModel } from "../../models/group";
 import * as Api from "../../network/api";
-import GroupCard from "../group/GroupCard";
+import GroupCard from "./GroupCard";
 import { useNavigate } from "react-router-dom";
 import configData from "../../config.json";
 import { User as UserModel } from "../../models/user";
@@ -40,7 +40,7 @@ const Dashboard = () => {
     navigate(configData.ADD_GROUP_URL, { state: { user: loggedInUser } });
   };
 
-  const addGroupButtond = (
+  const addGroupButton = (
     <button onClick={addGroup} className="lg:basis-1/4 grow lg:grow-0">
       <div className="card bg-primary h-full border-primary border hover:bg-base-300 justify-center items-center text-primary-content hover:text-primary">
         <div className="flex gap-4 items-start ">
@@ -81,7 +81,7 @@ const Dashboard = () => {
           ) : (
             <p className=" py-4">Looks empty in here :(</p>
           )}
-          {addGroupButtond}
+          {addGroupButton}
         </>
       )}
     </div>

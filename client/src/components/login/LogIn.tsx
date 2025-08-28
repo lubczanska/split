@@ -4,6 +4,7 @@ import SignUpForm from "./SignUpForm";
 import * as Api from "../../network/api";
 import { User } from "../../models/user";
 import { useNavigate } from "react-router-dom";
+import configData from "../../config.json";
 
 interface LogInProps {
   onLoginSuccessful: (user: User) => void;
@@ -25,7 +26,7 @@ const LogIn = ({ onLoginSuccessful }: LogInProps) => {
         // Redirect logged in users to dashboard
         const user = await Api.getLoggedInUser();
         if (user) {
-          navigate("/dashboard");
+          navigate(configData.DASHBOARD_URL);
         }
       } catch (error) {
         if (error instanceof Error) setErrorText(error.message);

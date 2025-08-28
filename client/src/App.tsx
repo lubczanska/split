@@ -6,7 +6,6 @@ import Dashboard from "./components/dashboard/Dashboard";
 import NavBar from "./components/NavBar";
 import { useEffect, useState } from "react";
 import { User } from "./models/user";
-import Landing from "./components/Landing";
 import AddGroup from "./components/dashboard/AddGroup";
 import configData from "./config.json";
 import Group from "./components/group/Group";
@@ -45,7 +44,22 @@ function App() {
 
         <main className="mx-auto  w-full p-4 md:p-6 2xl:p-10 ">
           <Routes>
-            <Route path={configData.LANDING_URL} element={<Landing />} />
+            <Route
+              path={configData.LANDING_URL}
+              element={
+                loggedInUser ? (
+                  <Dashboard />
+                ) : (
+                  <LogIn
+                    onLoginSuccessful={(user) => {
+                      console.log(user);
+                      setLoggedInUser(user);
+                      navigate(configData.DASHBOARD_URL);
+                    }}
+                  />
+                )
+              }
+            />
             <Route path={configData.DASHBOARD_URL} element={<Dashboard />} />
             <Route path={configData.ADD_GROUP_URL} element={<AddGroup />} />
             <Route path={configData.EDIT_GROUP_URL} element={<EditGroup />} />
@@ -63,7 +77,7 @@ function App() {
                   onLoginSuccessful={(user) => {
                     console.log(user);
                     setLoggedInUser(user);
-                    navigate("/dashboard");
+                    navigate(configData.DASHBOARD_URL);
                   }}
                 />
               }

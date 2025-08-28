@@ -2,10 +2,10 @@ import app from "./app";
 import env from "./util/validateEnv";
 import mongoose from "mongoose";
 
-const port = env.PORT || 5000;
-
+const port = process.env.PORT || env.PORT || 5000;
+const mongoUrl = process.env.MONGO_CONNECTION_URL || env.MONGO_CONNECTION_URL;
 mongoose
-  .connect(env.MONGO_CONNECTION_URL)
+  .connect(mongoUrl)
   .then(() => {
     console.log("Mongoose connected");
     app.listen(port, () => {

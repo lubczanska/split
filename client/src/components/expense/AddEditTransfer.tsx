@@ -46,7 +46,7 @@ const AddEditTransfer = () => {
       }
     }
     getGroup();
-  }, [params.groupId, navigate, setValue, groupMembers]);
+  }, [params.groupId, navigate, setValue]);
 
   async function onSubmit(input: TransferInput) {
     try {

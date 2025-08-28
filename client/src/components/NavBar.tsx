@@ -30,7 +30,11 @@ const NavBar = ({ loggedInUser }: NavBarProps) => {
       <div className="navbar-end flex gap-4 justify-end">
         {/* mobile menu */}
         <div className="visible sm:invisible dropdown dropdown-end order-last">
-          <div tabIndex={0} role="button" className="btn btn-ghost btn-circle visible sm:invisible">
+          <div
+            tabIndex={0}
+            role="button"
+            className="btn btn-ghost btn-circle visible sm:invisible"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5"

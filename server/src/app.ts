@@ -12,9 +12,12 @@ import MongoStore from "connect-mongo";
 const app = express();
 app.use(express.json());
 
+const secret = process.env.SESSION_SECRET || env.SESSION_SECRET;
+const mongoUrl = process.env.MONGO_CONNECTION_URL || env.MONGO_CONNECTION_URL;
+
 app.use(
   session({
-    secret: env.SESSION_SECRET,
+    secret: secret,
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -22,7 +25,7 @@ app.use(
       secure: false,
     },
     rolling: true,
-    store: MongoStore.create({ mongoUrl: env.MONGO_CONNECTION_URL }),
+    store: MongoStore.create({ mongoUrl: mongoUrl }),
   })
 );
 

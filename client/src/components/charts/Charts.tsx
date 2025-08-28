@@ -1,6 +1,6 @@
 import * as Api from "../../network/api";
 import { useEffect, useState } from "react";
-import UserChart from "../charts/UserChart";
+import UserChart from "./UserChart";
 import { Group } from "../../models/group";
 
 interface ChartsProps {
@@ -28,16 +28,16 @@ const Charts = ({ group, currency }: ChartsProps) => {
           const categoryTotal = await Api.getGroupCategoryTotal(groupId);
           const UserTotal = await Api.getGroupUserTotal(groupId);
           const Totals = new Map(UserTotal);
-          const UserSpent : [string, number][] = Object.entries(group.memberBalance).map(
-            ([key, value]) => {
-              const total = Totals.get(key) || 0;
-              return [key, total - value];
-            }
-          )
+          const UserSpent: [string, number][] = Object.entries(
+            group.memberBalance
+          ).map(([key, value]) => {
+            const total = Totals.get(key) || 0;
+            return [key, Math.round((total - value) * 100) / 100];
+          });
           setTotal(total);
           setCategoryTotal(categoryTotal);
           setUserTotal(UserTotal);
-          setUserSpent(UserSpent)
+          setUserSpent(UserSpent);
         }
       } catch (error) {
         setError(true);

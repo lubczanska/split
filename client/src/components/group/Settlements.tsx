@@ -21,7 +21,7 @@ const Settlements = ({
           </div>
           <div className="flex gap-6 items-center">
             <p className="text-lg font-semibold">
-              {amt} {currency}{" "}
+              {amt} {currency}
             </p>
             <button
               className="btn btn-secondary btn-xs"

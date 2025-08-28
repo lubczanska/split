@@ -10,9 +10,10 @@ interface ActionsProps {
   user: User;
   group: Group;
   onError: (msg: string) => void;
+  onShare: () => void;
 }
 
-const GroupActions = ({ group, user, onError }: ActionsProps) => {
+const GroupActions = ({ group, user, onError, onShare }: ActionsProps) => {
   const [isOwner, setIsOwner] = useState(false);
   const [isMember, setIsMember] = useState(false);
   const [showInfo, setShowInfo] = useState<string | null>(null);
@@ -50,12 +51,6 @@ const GroupActions = ({ group, user, onError }: ActionsProps) => {
     }
   }
 
-  function shareGroup() {
-    navigator.clipboard.writeText(
-      document.location.origin + configData.JOIN_GROUP_URL + group._id
-    );
-    setShowInfo("Join link copied to clipboard");
-  }
   // async function joinGroup(name: string) {
   //   try {
   //     await Api.joinGroup(group._id, user._id, name);
@@ -128,10 +123,7 @@ const GroupActions = ({ group, user, onError }: ActionsProps) => {
           JOIN
         </button>
       )}
-      <button
-        className="btn btn-outline btn-secondary"
-        onClick={() => shareGroup()}
-      >
+      <button className="btn btn-outline btn-secondary" onClick={onShare}>
         SHARE
       </button>
     </div>

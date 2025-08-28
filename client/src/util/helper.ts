@@ -51,11 +51,21 @@ export function categoryEmoji(category: string) {
   return emojis[category];
 }
 
-const COLORS = ["#ff6384", "#36a2eb", "#ffcd56"];
+const COLORS = [
+  "#ff6384",
+  "#36a2eb",
+  "#ffcd56",
+  "#8e43e7",
+  "#ff6c5f",
+  "#1cc7d0",
+  "#3369e7",
+  "#b84592",
+];
 
-export const getColor = (index: number): string => {
+export const getColor = (index: number, length: number): string => {
   if (index < COLORS.length) return COLORS[index];
-  else return "#ffffff";
+  if (index == length - 1) return "#ffffff";
+  else return COLORS[index % COLORS.length];
 };
 
 // export const parseAmount = (expr: string) : number => {

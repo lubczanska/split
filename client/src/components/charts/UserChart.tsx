@@ -9,8 +9,8 @@ interface UserChartProps {
 
 const UserChart = ({ totals, currency }: UserChartProps) => {
   Chart.register(ArcElement);
-  const colors = totals.map((_e, i) => getColor(i));
-  const colorClasses = colors.map((c) => `bg-[${c}]`);
+  const colors = totals.map((_e, i) => getColor(i, totals.length));
+  const colorClasses = colors.map((c) => `bg-${c}`);
   const data = {
     labels: totals.map((i) => i[0]),
     datasets: [
@@ -22,8 +22,7 @@ const UserChart = ({ totals, currency }: UserChartProps) => {
       },
     ],
   };
-  const options = {
-  };
+  const options = {};
   return (
     <div className="">
       <Doughnut data={data} options={options} />
