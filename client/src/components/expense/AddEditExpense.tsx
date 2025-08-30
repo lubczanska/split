@@ -9,6 +9,7 @@ import configData from "../../config.json";
 import { ExpenseInput } from "../../network/api";
 import ErrorAlert from "../ErrorAlert";
 import { CATEGORIES } from "../../util/helper";
+import { evaluate } from "mathjs";
 
 const AddExpense = () => {
   const navigate = useNavigate();
@@ -19,13 +20,24 @@ const AddExpense = () => {
   const [equal, setEqual] = useState(true);
   const [errorText, setErrorText] = useState<string | null>(null);
 
+  interface ExpenseFormInput {
+    // different from expense input because of math expression parsing
+    name: string;
+    amount: string;
+    date: string;
+    category: string;
+    paidBy: string;
+    members: string[];
+    costSplit: Record<string, string>;
+  }
+
   const {
     register,
     handleSubmit,
     getValues,
     setValue,
     formState: { errors, isSubmitting },
-  } = useForm<ExpenseInput>({
+  } = useForm<ExpenseFormInput>({
     defaultValues: { date: new Date().toISOString().split("T")[0] },
   });
 
@@ -60,29 +72,39 @@ const AddExpense = () => {
   const splitEqually = (cnt?: number, pos?: number) => {
     const count = cnt ? cnt : participants.filter(Boolean).length;
     const res =
-      Math.round((getValues("amount") / count + Number.EPSILON) * 100) / 100;
+      Math.round(
+        (evaluate(getValues("amount")) / count + Number.EPSILON) * 100
+      ) / 100;
     participants.forEach((selected, index) => {
       if (selected || index == pos)
-        setValue(`costSplit.${groupMembers[index]}`, res);
+        setValue(`costSplit.${groupMembers[index]}`, String(res));
     });
   };
 
-  async function onSubmit(input: ExpenseInput) {
+  async function onSubmit(input: ExpenseFormInput) {
     try {
       input.members = groupMembers.filter((_p, i) => participants[i]);
-      input.amount = Number(input.amount);
+      const amount = evaluate(input.amount);
       const split = Object.entries(input.costSplit)
         .filter((key) => input.members.includes(key[0]))
-        .map((key) => [key[0], Number(key[1])]);
+        .map((key) => [key[0], evaluate(key[1])]);
 
       const total = split.reduce((acc, curr) => acc + Number(curr[1]), 0);
-      if (!equal && total != input.amount)
+      if (!equal && total != amount)
         throw Error("Split has to sum up to amount");
 
-      input.costSplit = Object.fromEntries(split);
-      console.log(input);
+      const expense: ExpenseInput = {
+        name: input.name,
+        amount: total, // ignore uneven splitting errors, people don't care about cents
+        date: input.date,
+        category: input.category,
+        paidBy: input.paidBy,
+        members: input.members,
+        costSplit: Object.fromEntries(split),
+      };
+
       if (group) {
-        await Api.createExpense(group._id, input);
+        await Api.createExpense(group._id, expense);
         navigate(configData.VIEW_GROUP_URL + group._id);
       }
     } catch (error) {
@@ -148,11 +170,12 @@ const AddExpense = () => {
               required: "Required",
               // replace pattern with parsing a simple math equation function that throws "invalid amount calculation" on parse error
               pattern: {
-                value: /^\d+(?:\.\d{1,2})?$/gm,
+                value:
+                  /(^[\d]+([.][\d]{1,2})?)([+\-*/][\d]+([.][\d]{1,2})?)*/gm,
                 message: "Impossible amount of money",
               },
               validate: {
-                positive: (v) => Number(v) >= 0,
+                positive: (v) => evaluate(v) >= 0,
               },
               onChange: () => {
                 if (equal) splitEqually();
@@ -231,12 +254,13 @@ const AddExpense = () => {
                       {...register(`costSplit.${member}`, {
                         required: true,
                         pattern: {
-                          value: /^\d+(?:\.\d{1,2})?$/gm,
+                          value:
+                            /(^[\d]+([.][\d]{1,2})?)([+\-*/][\d]+([.][\d]{1,2})?)*/gm,
                           message: "Impossible amount of money",
                         },
                         validate: {
-                          positive: (v) =>
-                            !participants[index] || Number(v) >= 0,
+                          positive: (v: string) =>
+                            !participants[index] || evaluate(v) >= 0,
                         },
                       })}
                     />
