@@ -75,10 +75,8 @@ export const COLORS_TAILWIND = [
   "bg-green-500",
 ];
 
-export const getColor = (index: number, length: number): string => {
-  if (index < COLORS.length) return COLORS[index];
-  if (index == length - 1) return "#ffffff";
-  else return COLORS[index % COLORS.length];
+export const getColor = (index: number): string => {
+  return COLORS[index % COLORS.length];
 };
 
 export const getTailwindColor = (index: number, length: number): string => {

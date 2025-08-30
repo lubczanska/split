@@ -9,7 +9,7 @@ interface UserChartProps {
 
 const UserChart = ({ totals, currency }: UserChartProps) => {
   Chart.register(ArcElement);
-  const colors = totals.map((_e, i) => getColor(i, totals.length));
+  const colors = totals.map((_e, i) => getColor(i));
   const data = {
     labels: totals.map((i) => i[0]),
     datasets: [
@@ -29,7 +29,12 @@ const UserChart = ({ totals, currency }: UserChartProps) => {
         {totals &&
           totals.map(([name, amount], index) => (
             <div className="flex gap-2 items-center">
-              <div className={"badge border-0 " + COLORS_TAILWIND[index]}></div>
+              <div
+                className={
+                  "badge border-0 " +
+                  COLORS_TAILWIND[index % COLORS_TAILWIND.length]
+                }
+              ></div>
               <div className="flex justify-between grow ">
                 <p className="font-medium">{name} </p>
                 <p className="font-semibold">

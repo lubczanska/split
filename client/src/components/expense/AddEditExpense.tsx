@@ -166,6 +166,7 @@ const AddExpense = () => {
             name="amount"
             label="Amount"
             register={register}
+            placeholder="You can use math expressions, like 2+2"
             registerOptions={{
               required: "Required",
               // replace pattern with parsing a simple math equation function that throws "invalid amount calculation" on parse error
@@ -249,7 +250,7 @@ const AddExpense = () => {
                           : "disabled:hidden max-w-20"
                       }
                       disabled={!participants[index] || equal}
-                      placeholder="You can use math expressions, like 2+2"
+                      placeholder="0"
                       id={"participant-" + member}
                       {...register(`costSplit.${member}`, {
                         required: true,
