@@ -66,6 +66,21 @@ const Group = () => {
     getGroup();
   }, [navigate, params.groupId]);
 
+  async function syncData() {
+    try {
+      if (group) {
+        const expenses = await Api.fetchGroupExpenses(group._id);
+        setExpenses(expenses);
+        const newGroup = await Api.fetchGroup(group._id);
+        setGroup(newGroup);
+        if (settlements) getSettlements();
+      }
+    } catch (error) {
+      if (error instanceof Error) setErrorText(error.message);
+      else alert(error);
+    }
+  }
+
   async function deleteExpense(expense: ExpenseModel) {
     try {
       await Api.deleteExpense(expense._id);
@@ -217,6 +232,7 @@ const Group = () => {
                   if (shareRef.current) shareRef.current.showModal();
                   setShowShare(true);
                 }}
+                onSync={syncData}
               />
             )}
           </div>

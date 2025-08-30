@@ -13,7 +13,7 @@ const UserChart = ({ totals, currency }: UserChartProps) => {
   const tailwindColors = totals.map((_e, i) =>
     getTailwindColor(i, totals.length)
   );
-  const colorClasses = tailwindColors.map((c) => `bg-${c}-500`);
+  const colorClasses = tailwindColors.map((c) => `badge border-0  bg-${c}-500`);
   const data = {
     labels: totals.map((i) => i[0]),
     datasets: [
@@ -33,7 +33,7 @@ const UserChart = ({ totals, currency }: UserChartProps) => {
         {totals &&
           totals.map(([name, amount], index) => (
             <div className="flex gap-2 items-center">
-              <div className={"badge border-0 " + colorClasses[index]}></div>
+              <div className={colorClasses[index]}></div>
               <div className="flex justify-between grow ">
                 <p className="font-medium">{name} </p>
                 <p className="font-semibold">
