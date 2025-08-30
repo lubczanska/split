@@ -6,6 +6,7 @@ interface ExpenseProps {
   currency: string;
   OnExpenseClicked: (expense: ExpenseModel) => void;
   OnDeleteClicked: (expense: ExpenseModel) => void;
+  loggedIn: boolean;
 }
 
 const Expense = ({
@@ -13,6 +14,7 @@ const Expense = ({
   currency,
   OnExpenseClicked,
   OnDeleteClicked,
+  loggedIn,
 }: ExpenseProps) => {
   return (
     <li className=" bg-base-200 hover:bg-base-300 py-4 w-full rounded-lg ">
@@ -32,28 +34,30 @@ const Expense = ({
           </p>
         </div>
         <p className="text-lg font-semibold">{`${expense.amount} ${currency} `}</p>
-        <button
-          onClick={(e) => {
-            OnDeleteClicked(expense);
-            e.stopPropagation();
-          }}
-          className="btn btn-circle btn-ghost"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+        {loggedIn && (
+          <button
+            onClick={(e) => {
+              OnDeleteClicked(expense);
+              e.stopPropagation();
+            }}
+            className="btn btn-circle btn-ghost"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        )}
       </div>
     </li>
   );

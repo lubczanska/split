@@ -123,7 +123,6 @@ const Group = () => {
           setGroup(newGroup);
           getSettlements();
         }
-        //reload properly
       }
     } catch (error) {
       if (error instanceof Error) setErrorText(error.message);
@@ -143,6 +142,7 @@ const Group = () => {
               setShowExpense(expense);
             }}
             OnDeleteClicked={(expense) => deleteExpense(expense)}
+            loggedIn={myMember != null}
           />
         ))}
       </ul>
@@ -208,9 +208,14 @@ const Group = () => {
                 setShowShare(false);
                 if (shareRef.current) shareRef.current.close();
               }}
-              link={
+              joinLink={
                 document.location.origin +
                 configData.JOIN_GROUP_URL +
+                group?._id
+              }
+              viewLink={
+                document.location.origin +
+                configData.VIEW_GROUP_URL +
                 group?._id
               }
             />
@@ -243,14 +248,16 @@ const Group = () => {
           <div className="card card-compact bg-base-100 grow lg:basis-2/3">
             <div className="flex flex-col gap-4">
               <span className="card-title">Your expenses</span>
-              <div className="card-actions gap-4">
-                <Link to={configData.ADD_EXPENSE_URL + group?._id}>
-                  <Button type="button" label="Add expense" />
-                </Link>
-                <Link to={configData.ADD_TRANSFER_URL + group?._id}>
-                  <Button type="button" label="Add transfer" />
-                </Link>
-              </div>
+              {myMember && (
+                <div className="card-actions gap-4">
+                  <Link to={configData.ADD_EXPENSE_URL + group?._id}>
+                    <Button type="button" label="Add expense" />
+                  </Link>
+                  <Link to={configData.ADD_TRANSFER_URL + group?._id}>
+                    <Button type="button" label="Add transfer" />
+                  </Link>
+                </div>
+              )}
             </div>
             <div className="py-4">
               {expensesLoading && (
@@ -289,6 +296,7 @@ const Group = () => {
                   settlements={settlements}
                   currency={group?.currency}
                   settleDebt={settleDebt}
+                  loggedIn={myMember != null}
                 />
                 <button
                   className="btn btn-circle my-8"
