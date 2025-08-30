@@ -248,8 +248,8 @@ const AddExpense = () => {
                           ? "max-w-20"
                           : "disabled:hidden max-w-20"
                       }
-                      placeholder="0"
                       disabled={!participants[index] || equal}
+                      placeholder="You can use math expressions, like 2+2"
                       id={"participant-" + member}
                       {...register(`costSplit.${member}`, {
                         required: true,

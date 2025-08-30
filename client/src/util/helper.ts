@@ -63,7 +63,7 @@ const COLORS = [
   "#22c55e",
 ];
 
-const COLORS_TAILWIND = [
+export const COLORS_TAILWIND = [
   "rose",
   "blue",
   "yellow",

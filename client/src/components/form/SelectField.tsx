@@ -43,7 +43,7 @@ const SelectField = ({
         >
           aria-invalid={error ? "true" : "false"}
           {options.map((option) =>
-            option.value === defaultVal ? (
+            option.value == defaultVal ? (
               <option key={option.value} value={option.value} selected>
                 {option.label}
               </option>

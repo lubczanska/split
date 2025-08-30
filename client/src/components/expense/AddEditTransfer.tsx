@@ -8,11 +8,12 @@ import * as Api from "../../network/api";
 import configData from "../../config.json";
 import { ExpenseInput } from "../../network/api";
 import ErrorAlert from "../ErrorAlert";
+import { evaluate } from "mathjs";
 
 interface TransferInput {
   from: string;
   to: string;
-  amount: number;
+  amount: string;
   date: string;
 }
 
@@ -52,16 +53,15 @@ const AddEditTransfer = () => {
     try {
       if (input.from === input.to)
         throw Error("You cannot transfer to yourself");
-
-      input.amount = Number(input.amount);
+      const amount = evaluate(input.amount);
       const newInput: ExpenseInput = {
         name: "transfer",
-        amount: input.amount,
+        amount: amount,
         paidBy: input.from,
         date: input.date,
         category: "Transfer",
         members: [input.to],
-        costSplit: Object.fromEntries([[input.to, input.amount]]),
+        costSplit: Object.fromEntries([[input.to, amount]]),
       };
       if (group) {
         await Api.createExpense(group._id, newInput);
@@ -124,12 +124,16 @@ const AddEditTransfer = () => {
         <TextInputField
           name="amount"
           label="Amount"
+          placeholder="You can use math expressions, like 2+2"
           register={register}
           registerOptions={{
             required: "Required",
             pattern: {
-              value: /^\d+(?:\.\d{1,2})?$/gm,
+              value: /(^[\d]+([.][\d]{1,2})?)([+\-*/][\d]+([.][\d]{1,2})?)*/gm,
               message: "Impossible amount of money",
+            },
+            validate: {
+              positive: (v: string) => evaluate(v) >= 0,
             },
           }}
           error={errors.amount}

@@ -119,8 +119,7 @@ const Group = () => {
         const expense = await Api.createExpense(group._id, input);
         setExpenses([...expenses, expense]);
         if (group) {
-          const newGroup = await Api.fetchGroup(group._id);
-          setGroup(newGroup);
+          syncData();
           getSettlements();
         }
       }
