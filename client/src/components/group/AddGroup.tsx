@@ -8,7 +8,6 @@ import configData from "../../config.json";
 import { useState } from "react";
 import ErrorAlert from "../ErrorAlert";
 import { CURRENCIES, EMOJI } from "../../util/helper";
-import CheckBoxField from "../form/CheckBoxField";
 
 const AddGroup = () => {
   const [errorText, setErrorText] = useState<string | null>(null);
@@ -111,12 +110,6 @@ const AddGroup = () => {
             register={register}
             registerOptions={{ required: "Required" }}
             error={errors.currency}
-          />
-          <CheckBoxField
-            name="public"
-            label="Public"
-            register={register}
-            error={errors.name}
           />
         </div>
         <label className="label">Members</label>

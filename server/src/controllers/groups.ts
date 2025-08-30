@@ -100,7 +100,6 @@ interface createGroupBody {
   emoji?: string;
   currency?: string;
   members?: { name: string }[];
-  isPublic?: boolean;
 }
 
 export const createGroup: RequestHandler<
@@ -113,7 +112,6 @@ export const createGroup: RequestHandler<
   const emoji = req.body.emoji;
   const currency = req.body.currency;
   const members = req.body.members;
-  const isPublic = req.body.isPublic;
   const userId = req.session.userId;
 
   try {
@@ -137,7 +135,7 @@ export const createGroup: RequestHandler<
       members: members,
       memberBalance: balance,
       owner: userId,
-      isPublic: isPublic,
+      isPublic: true,
     });
 
     res.status(201).json(newGroup);

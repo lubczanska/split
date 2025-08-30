@@ -44,6 +44,7 @@ const LogIn = ({ onLoginSuccessful }: LogInProps) => {
       {errorText && <p role="alert">{errorText}</p>}
       {!showRegister && (
         <div className="flex flex-col items-center  justify-center mb-5">
+          <h1 className="stat-value mb-10">Welcome to SPLIT</h1>
           <LogInForm
             onLogInSuccessful={(user) => {
               onLoginSuccessful(user);
@@ -62,6 +63,7 @@ const LogIn = ({ onLoginSuccessful }: LogInProps) => {
       )}
       {showRegister && (
         <div className="flex flex-col items-center justify-center mb-5">
+          <h1 className="stat-value mb-10">Welcome to SPLIT</h1>
           <SignUpForm
             onSignUpSuccessful={(user) => {
               onLoginSuccessful(user);

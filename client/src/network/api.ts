@@ -111,7 +111,6 @@ export interface GroupInput {
   emoji: string;
   currency: string;
   members: { name: string; id?: string }[];
-  isPublic: boolean;
 }
 
 export async function createGroup(group: GroupInput): Promise<Group> {

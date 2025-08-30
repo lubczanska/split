@@ -52,14 +52,27 @@ export function categoryEmoji(category: string) {
 }
 
 const COLORS = [
-  "#ff6384",
-  "#36a2eb",
-  "#ffcd56",
-  "#8e43e7",
-  "#ff6c5f",
-  "#1cc7d0",
-  "#3369e7",
-  "#b84592",
+  "#f43f5e",
+  "#3b82f6",
+  "#eab308",
+  "#a855f7",
+  "fuchsia",
+  "#84cc16",
+  "#14b8a6",
+  "#f97316",
+  "#22c55e",
+];
+
+const COLORS_TAILWIND = [
+  "rose",
+  "blue",
+  "yellow",
+  "purple",
+  "fuchsia",
+  "lime",
+  "teal",
+  "orange",
+  "green",
 ];
 
 export const getColor = (index: number, length: number): string => {
@@ -68,6 +81,11 @@ export const getColor = (index: number, length: number): string => {
   else return COLORS[index % COLORS.length];
 };
 
+export const getTailwindColor = (index: number, length: number): string => {
+  if (index < COLORS_TAILWIND.length) return COLORS_TAILWIND[index];
+  if (index == length - 1) return "white";
+  else return COLORS_TAILWIND[index % COLORS_TAILWIND.length];
+};
 // export const parseAmount = (expr: string) : number => {
 //   // parse expr and return result
 //   // throw error if expr is invalid
