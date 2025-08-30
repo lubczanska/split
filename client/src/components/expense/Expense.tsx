@@ -14,8 +14,6 @@ const Expense = ({
   OnExpenseClicked,
   OnDeleteClicked,
 }: ExpenseProps) => {
-
-
   return (
     <li className=" bg-base-200 hover:bg-base-300 py-4 w-full rounded-lg ">
       <div

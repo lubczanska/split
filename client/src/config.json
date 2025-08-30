@@ -1,5 +1,6 @@
 {
   "SITE_URL": "https://split-backend-o6ro.onrender.com",
+  "LOCAL_URL": "http://localhost:5000",
   "LANDING_URL": "/",
   "LOGIN_URL": "/login",
   "DASHBOARD_URL": "/dashboard",

@@ -6,7 +6,7 @@ import Dashboard from "./components/dashboard/Dashboard";
 import NavBar from "./components/NavBar";
 import { useEffect, useState } from "react";
 import { User } from "./models/user";
-import AddGroup from "./components/dashboard/AddGroup";
+import AddGroup from "./components/group/AddGroup";
 import configData from "./config.json";
 import Group from "./components/group/Group";
 import AddExpense from "./components/expense/AddEditExpense";

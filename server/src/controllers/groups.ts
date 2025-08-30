@@ -1,5 +1,4 @@
 import { RequestHandler } from "express";
-import { assertDefined } from "../util/assertDefined";
 import GroupModel from "../models/group";
 import UserModel from "../models/user";
 import ExpenseModel from "../models/expense";
@@ -29,11 +28,12 @@ export const getSettlements: RequestHandler = async (req, res, next) => {
 };
 
 const getUsername = async (id?: mongoose.Types.ObjectId) => {
-  assertDefined(id);
+  if (!id) throw createHttpError(400, "No user id");
   const user = await UserModel.findById(id).exec();
-  if (!user) throw createHttpError(400, "invalid user id");
+  if (!user) throw createHttpError(400, "Invalid user id");
   return user.username;
 };
+
 /*
 Get all groups logged in user is a member of
 Accepts: user ID
@@ -41,10 +41,9 @@ Returns: groups info
 */
 export const getUserGroups: RequestHandler = async (req, res, next) => {
   const userId = req.session.userId;
-  const username = await getUsername(userId);
+
   try {
-    // assertDefined(userId);
-    // const groups = await GroupModel.find({ owner: userId }).exec();
+    const username = await getUsername(userId);
     const groups = await GroupModel.find({
       "members.id": username,
     });
@@ -61,10 +60,10 @@ Returns: group info
 */
 export const getGroup: RequestHandler = async (req, res, next) => {
   const groupId = req.params.groupId;
-  const userId = req.session.userId;
+
   try {
     if (!mongoose.isValidObjectId(groupId)) {
-      throw createHttpError(400, "invalid expense id");
+      throw createHttpError(400, "Invalid group id");
     }
 
     const group = await GroupModel.findById(groupId).exec();
@@ -73,16 +72,13 @@ export const getGroup: RequestHandler = async (req, res, next) => {
       throw createHttpError(404, "Group not found");
     }
 
-    if (!group.isPublic) {
-      const username = await getUsername(userId);
-      // assertDefined(userId);
-      if (!group.members.some((m) => m.id == username))
-        throw createHttpError(401, "You cannot access this group");
-      // if (!group.owner.equals(userId)) {
-      //   // <- wrong
-      //   throw createHttpError(401, "You cannot access this group");
-      // }
-    }
+    // if (!group.isPublic) {
+    //   const userId = req.session.userId;
+    //   if (!userId) createHttpError(401, "User not authenticated");
+    //   const username = await getUsername(userId);
+    //   if (!group.members.some((m) => m.id == username))
+    //     throw createHttpError(401, "You cannot access this group");
+    // }
 
     res.status(200).json(group);
   } catch (error) {
@@ -104,6 +100,7 @@ interface createGroupBody {
   emoji?: string;
   currency?: string;
   members?: { name: string }[];
+  isPublic?: boolean;
 }
 
 export const createGroup: RequestHandler<
@@ -116,13 +113,12 @@ export const createGroup: RequestHandler<
   const emoji = req.body.emoji;
   const currency = req.body.currency;
   const members = req.body.members;
+  const isPublic = req.body.isPublic;
   const userId = req.session.userId;
 
   try {
-    assertDefined(userId);
-    // do better validation
     if (!name || !emoji || !currency || !members)
-      throw createHttpError(400, "No required group parameters");
+      throw createHttpError(400, "Missing required group parameters");
 
     const memberNames = members.map((a) => a.name);
     if (memberNames.length !== new Set(memberNames).size)
@@ -141,7 +137,7 @@ export const createGroup: RequestHandler<
       members: members,
       memberBalance: balance,
       owner: userId,
-      isPublic: false,
+      isPublic: isPublic,
     });
 
     res.status(201).json(newGroup);
@@ -181,9 +177,8 @@ export const updateGroup: RequestHandler<
   const members = req.body.members;
 
   try {
-    // do better validation
     if (!name || !emoji || !members) {
-      throw createHttpError(400, "No required group parameters");
+      throw createHttpError(400, "Missing required group parameters");
     }
 
     const group = await GroupModel.findById(groupId).exec();
@@ -212,13 +207,14 @@ export const updateGroup: RequestHandler<
     next(error);
   }
 };
+
 /*
 Remove user from group members
 Accepts: Group Id, User Id
 Validation: User is not the group owner
 */
 export const leaveGroup: RequestHandler = async (req, res, next) => {
-  const username = req.params.userId;
+  const username = req.body.userId;
   const groupId = req.params.groupId;
   try {
     if (!mongoose.isValidObjectId(groupId)) {
@@ -234,8 +230,8 @@ export const leaveGroup: RequestHandler = async (req, res, next) => {
     }
 
     group.members.forEach((member) => {
-      if (member.id != username) {
-        // <- why !=, wtf
+      if (member.id == username) {
+        // <- weird
         member.id = undefined;
       }
     });
@@ -253,9 +249,9 @@ Accepts: Group Id, User Id, name
 Validation: (User is not in the group already? )
 */
 export const joinGroup: RequestHandler = async (req, res, next) => {
-  const userId = req.params.userId;
+  const userId = req.body.userId;
   const groupId = req.params.groupId;
-  const name = req.params.name;
+  const name = req.body.name;
   try {
     if (!mongoose.isValidObjectId(groupId)) {
       throw createHttpError(400, "Invalid group id");
@@ -271,7 +267,10 @@ export const joinGroup: RequestHandler = async (req, res, next) => {
 
     group.members.forEach((member) => {
       if (member.id == userId && member.name != name) {
-        throw createHttpError(400, "You cannot join a group twice");
+        throw createHttpError(
+          400,
+          `You cannot join a group twice ${member.name} ${name}!`
+        );
       }
       if (member.name == name) {
         member.id = userId;

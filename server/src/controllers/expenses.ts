@@ -14,6 +14,7 @@ export const getGroupExpenses: RequestHandler = async (req, res, next) => {
     const expenses = await ExpenseModel.find({ groupId: groupId })
       .sort({ date: -1 })
       .exec();
+    expenses.forEach((e) => (e.date = e.date.slice(0, 10)));
     res.status(200).json(expenses);
   } catch (error) {
     next(error);
@@ -31,6 +32,7 @@ export const getExpense: RequestHandler = async (req, res, next) => {
     if (!expense) {
       throw createHttpError(404, "Expense not found");
     }
+    expense.date = expense.date.slice(0, 10);
     res.status(200).json(expense);
   } catch (error) {
     next(error);
@@ -130,24 +132,18 @@ export const createExpense: RequestHandler<
     if (!name || !amount || !date || !paidBy || !members || !costSplit)
       throw createHttpError(400, "No required expense parameters");
 
-    // do individual amounts sum to amount?
-    // const sum = Object.values(costSplit).reduce((acc, x) => acc + x, 0);
-    // if (sum != amount)
-    //   //what about rounding
-    //   throw createHttpError(
-    //     400,
-    //     "Indvidual amounts don't sum to expense amount"
-    //   );
-
     const split = new Map(Object.entries(costSplit));
     await updateBalances(groupId, paidBy, amount, members, split);
 
+    const time = new Date().getTime();
+    const dateAdjusted = new Date(date);
+    dateAdjusted.setTime(time);
     const newExpense = await ExpenseModel.create({
       name: name,
       amount: amount,
       groupId: groupId,
       members: members,
-      date: date,
+      date: dateAdjusted.toISOString(),
       paidBy: paidBy,
       costSplit: costSplit,
       category: category,
@@ -181,7 +177,6 @@ export const updateExpense: RequestHandler<
 > = async (req, res, next) => {
   const expenseId = req.params.expenseId;
   const name = req.body.name;
-  // const groupId = req.body.groupId;
   const amount = req.body.amount;
   const date = req.body.date;
   const members = req.body.members;
@@ -190,7 +185,7 @@ export const updateExpense: RequestHandler<
 
   try {
     if (!mongoose.isValidObjectId(expenseId))
-      throw createHttpError(400, "invalid expense id");
+      throw createHttpError(400, "Invalid expense id");
     if (!name || !amount || !date || !paidBy || !members || !costSplit)
       throw createHttpError(400, "No required expense parameters");
 
@@ -228,10 +223,10 @@ export const deleteExpense: RequestHandler = async (req, res, next) => {
 
   try {
     if (!mongoose.isValidObjectId(expenseId))
-      throw createHttpError(400, "invalid expense id");
+      throw createHttpError(400, "Invalid expense id");
     const expense = await ExpenseModel.findOne({ _id: expenseId }).exec();
     if (!expense) {
-      throw createHttpError(404, "exoense not found");
+      throw createHttpError(404, "Expense not found");
     }
 
     await ExpenseModel.deleteOne({

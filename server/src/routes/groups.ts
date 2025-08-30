@@ -9,7 +9,11 @@ router.post("/", GroupsController.createGroup);
 router.post("/leave/:groupId", GroupsController.leaveGroup);
 router.post("/join/:groupId", GroupsController.joinGroup);
 router.patch("/:groupId", GroupsController.updateGroup);
-router.delete("/:groupId", GroupsController.deleteGroup);
+router.delete(
+  "/:groupId",
+
+  GroupsController.deleteGroup
+);
 
 // stats
 router.get("/total/:groupId", GroupsController.getTotalGroupExpenses);

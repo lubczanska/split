@@ -73,7 +73,7 @@ const Group = () => {
       if (group) {
         const newGroup = await Api.fetchGroup(group._id);
         setGroup(newGroup);
-        getSettlements();
+        if (settlements) getSettlements();
       }
     } catch (error) {
       if (error instanceof Error) setErrorText(error.message);

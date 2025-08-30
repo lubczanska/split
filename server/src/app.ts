@@ -1,5 +1,5 @@
 import "dotenv/config";
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import expensesRoutes from "./routes/expenses";
 import userRoutes from "./routes/users";
 import groupRoutes from "./routes/groups";
@@ -12,12 +12,9 @@ import MongoStore from "connect-mongo";
 const app = express();
 app.use(express.json());
 
-const secret = process.env.SESSION_SECRET || env.SESSION_SECRET;
-const mongoUrl = process.env.MONGO_CONNECTION_URL || env.MONGO_CONNECTION_URL;
-
 app.use(
   session({
-    secret: secret,
+    secret: env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -25,7 +22,7 @@ app.use(
       secure: false,
     },
     rolling: true,
-    store: MongoStore.create({ mongoUrl: mongoUrl }),
+    store: MongoStore.create({ mongoUrl: env.MONGO_CONNECTION_URL }),
   })
 );
 
@@ -39,13 +36,14 @@ app.use((_req, _res, next) => {
   next(createHttpError(404, "Endpoint not found"));
 });
 
-app.use((error: unknown, _req: Request, res: Response) => {
-  console.error(error);
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
+  console.error(err);
   let errorMsg = "An unknown error has ocurred";
   let statusCode = 500;
-  if (isHttpError(error)) {
-    statusCode = error.status;
-    errorMsg = error.message;
+  if (isHttpError(err)) {
+    statusCode = err.status;
+    errorMsg = err.message;
   }
   res.status(statusCode).json({ error: errorMsg });
 });

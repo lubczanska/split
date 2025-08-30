@@ -13,7 +13,7 @@ const NavBar = ({ loggedInUser }: NavBarProps) => {
   async function onLogOut() {
     try {
       await UsersApi.logOut();
-      navigate(configData.LANDING_URL);
+      navigate(configData.LOGIN_URL);
     } catch (error) {
       console.error(error);
     }

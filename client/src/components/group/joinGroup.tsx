@@ -32,6 +32,8 @@ const JoinGroup = () => {
             setLoggedInUser(user);
             if (group && isMember(group, user.username))
               navigate(configData.VIEW_GROUP_URL + group._id);
+          } else {
+            navigate(configData.LOGIN_URL);
           }
         } else {
           navigate(configData.DASHBOARD_URL);
@@ -44,7 +46,7 @@ const JoinGroup = () => {
       }
     }
     getGroup();
-  }, [group, navigate, params.groupId]);
+  }, [navigate, params.groupId]);
 
   async function claim(name: string) {
     try {
@@ -73,15 +75,14 @@ const JoinGroup = () => {
         {group &&
           group?.members.map((value) => {
             return (
-              <div key={value.name} className="join-item input input-bordered ">
+              <div
+                key={value.name}
+                className="flex items-center join-item input input-bordered input-lg"
+              >
                 <div className="flex items-center justify-between w-full">
                   {<p className="">{value.name}</p>}
                   {value.id ? (
-                    value.id == loggedInUser?.username ? (
-                      <div className="badge badge-secondary">@{value.id}</div>
-                    ) : (
-                      <div className="badge badge-primary">@{value.id}</div>
-                    )
+                    <div className="badge badge-primary">@{value.id}</div>
                   ) : (
                     <Button
                       label="that's me!"

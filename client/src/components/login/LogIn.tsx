@@ -11,7 +11,6 @@ interface LogInProps {
 }
 
 const LogIn = ({ onLoginSuccessful }: LogInProps) => {
-  // check if user is registered and if yes redirect to dashboard
   // const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
   const [showRegister, setShowRegister] = useState(false);
   const [errorText, setErrorText] = useState<string | null>(null);
