@@ -281,28 +281,13 @@ const Group = () => {
           {/* Expenses end */}
           <div className="card bg-base-100 grow basis-1/4">
             {/* Debt stat */}
-            {myMember ? (
-              <DebtStat
-                debt={loggedInUser ? group?.memberBalance[myMember] : 0}
-                currency={group?.currency}
-                onClick={getSettlements}
-                showButton={!settlements}
-              />
-            ) : (
-              <div className={"stats text-primary-content mb-4 bg-neutral"}>
-                <div className="stat">
-                  <div className="stat-actions">
-                    <button
-                      className="btn btn-success btn-sm"
-                      onClick={getSettlements}
-                    >
-                      see all debts
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-
+            <DebtStat
+              debt={myMember ? group?.memberBalance[myMember] : 0}
+              currency={group?.currency}
+              onClick={getSettlements}
+              showButton={!settlements}
+              loggedIn={myMember != null}
+            />
             {settlements ? (
               <div>
                 <Settlements

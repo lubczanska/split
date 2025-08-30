@@ -1,6 +1,6 @@
 import { Doughnut } from "react-chartjs-2";
 import { Chart, ArcElement } from "chart.js";
-import { getColor, getTailwindColor } from "../../util/helper";
+import { getColor } from "../../util/helper";
 
 interface UserChartProps {
   totals: Array<[string, number]>;
@@ -10,10 +10,19 @@ interface UserChartProps {
 const UserChart = ({ totals, currency }: UserChartProps) => {
   Chart.register(ArcElement);
   const colors = totals.map((_e, i) => getColor(i, totals.length));
-  const tailwindColors = totals.map((_e, i) =>
-    getTailwindColor(i, totals.length)
-  );
-  const colorClasses = tailwindColors.map((c) => `badge border-0  bg-${c}-500`);
+  // const tailwindColors = totals.map((_e, i) =>
+  //   getTailwindColor(i, totals.length)
+  // );
+  const colorClasses = [
+    "badge border-0 bg-blue-500",
+    "badge border-0 bg-green-500",
+    "badge border-0 bg-yellow-500",
+    "badge border-0 bg-purple-500",
+    "badge border-0 bg-pink-500",
+    "badge border-0 bg-red-500",
+    "badge border-0 bg-indigo-500",
+  ];
+  //tailwindColors.map((c) => `badge border-0 bg-${c}-500`);
   const data = {
     labels: totals.map((i) => i[0]),
     datasets: [
