@@ -7,8 +7,10 @@ interface shareGroupProps {
 const ShareGroup = ({ joinLink, viewLink, onCopy }: shareGroupProps) => {
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-xl">Share link: </p>
-      <p className="text-lg">{joinLink}</p>
+      <p className="text-xl font-bold">Share link: </p>
+      <div className="card bg-base-200">
+        <p className="text-lg">{joinLink}</p>
+      </div>
       <button
         className="btn btn-outline btn-secondary"
         onClick={() => {
@@ -18,8 +20,10 @@ const ShareGroup = ({ joinLink, viewLink, onCopy }: shareGroupProps) => {
       >
         COPY TO CLIPBOARD
       </button>
-      <p className="text-xl">View link: </p>
-      <p className="text-lg">{viewLink}</p>
+      <p className="text-xl font-bold">View link: </p>
+      <div className="card bg-base-200">
+        <p className="text-lg">{viewLink}</p>{" "}
+      </div>
       <button
         className="btn btn-outline btn-secondary"
         onClick={() => {
