@@ -10,6 +10,7 @@ import { ExpenseInput } from "../../network/api";
 import ErrorAlert from "../ErrorAlert";
 import { CATEGORIES } from "../../util/helper";
 import { evaluate } from "mathjs";
+import { round2 } from "../../util/round2";
 
 const AddExpense = () => {
   const navigate = useNavigate();
@@ -71,10 +72,7 @@ const AddExpense = () => {
   */
   const splitEqually = (cnt?: number, pos?: number) => {
     const count = cnt ? cnt : participants.filter(Boolean).length;
-    const res =
-      Math.round(
-        (evaluate(getValues("amount")) / count + Number.EPSILON) * 100
-      ) / 100;
+    const res = round2(evaluate(getValues("amount")) / count);
     participants.forEach((selected, index) => {
       if (selected || index == pos)
         setValue(`costSplit.${groupMembers[index]}`, String(res));
@@ -95,7 +93,7 @@ const AddExpense = () => {
 
       const expense: ExpenseInput = {
         name: input.name,
-        amount: total, // ignore uneven splitting errors, people don't care about cents
+        amount: round2(total), // ignore uneven splitting errors, people don't care about cents
         date: input.date,
         category: input.category,
         paidBy: input.paidBy,
