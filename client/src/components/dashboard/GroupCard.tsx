@@ -9,7 +9,8 @@ interface GroupProps {
 const GroupCard = ({ group, username }: GroupProps) => {
   const groupUrl = "/dashboard/" + group._id;
   const BalanceText = () => {
-    const balance = group.memberBalance[username];
+    const myMember = group.members.find((m) => m.id == username)?.name || "";
+    const balance = group.memberBalance[myMember] || 0;
     const classes = "flex flex-col items-start justify-end pt-4";
     if (balance < 0) {
       return (
